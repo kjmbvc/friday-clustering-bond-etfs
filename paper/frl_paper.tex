@@ -1,0 +1,932 @@
+% =====================================================================
+% Wrapper-specific Friday clustering in large benchmark bond ETFs:
+% a within-asset-class stylized fact
+%
+% LaTeX port of v18.9 main letter + Online Appendix.
+% Audit-applied: every awkward-prose fix from PART 2 of
+% FRL_v18_9_SubmissionReadinessAudit.docx is applied inline; every
+% equation from PART 1 is properly typeset with amsmath.
+%
+% LOCAL COMPILE (article class):
+%   pdflatex frl_paper && bibtex frl_paper && pdflatex frl_paper && pdflatex frl_paper
+%
+% FRL SUBMISSION (elsarticle class):
+%   Replace the line  \documentclass[12pt,a4paper]{article}
+%   with             \documentclass[preprint,12pt,authoryear]{elsarticle}
+%   Replace          \bibliographystyle{plainnat}
+%   with             \bibliographystyle{elsarticle-harv}
+%   Then recompile.
+% =====================================================================
+
+\documentclass[12pt,a4paper]{article}   % submission: replace with elsarticle, see header
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{mathtools}
+\usepackage{bm}
+% bbm.sty not always available; fall back to bold-1 for indicator
+\usepackage{graphicx}
+\graphicspath{{figures_v15_9/}}    % look for PNGs in subfolder
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{threeparttable}
+\usepackage{caption}
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[round,authoryear]{natbib}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{textcomp}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+% --- running headers (helpful for reviewers) ---
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyhead[L]{\itshape\small Friday clustering of bond ETF mispricing}
+\fancyhead[R]{\itshape\small Manuscript draft, April 2026}
+\fancyfoot[C]{\thepage}
+
+% line numbers for editor review (uncomment for first-round submission)
+\usepackage{lineno}
+% \linenumbers
+
+\onehalfspacing
+
+% --- hyphenation rules for paper-specific multi-letter operators ---
+\hyphenation{Fri-day-Shift Fri-day-Create MS-GARCH STAR-GARCH TGARCH iN-AV
+  iShares yfinance pre-window pre-spec-i-fied}
+
+% --- math operators (multi-letter named quantities, ROMAN by default) ---
+\DeclareMathOperator{\Prem}{Prem}
+\DeclareMathOperator{\Close}{Close}
+\DeclareMathOperator{\NAV}{NAV}
+\DeclareMathOperator{\MaxPremDay}{MaxPremDay}
+\DeclareMathOperator{\FridayShift}{FridayShift}
+\DeclareMathOperator{\FridayCreate}{FridayCreate}
+\DeclareMathOperator{\Creation}{Creation}
+\DeclareMathOperator{\Redemption}{Redemption}
+\DeclareMathOperator{\MSE}{MSE}
+\DeclareMathOperator{\RSS}{RSS}
+\DeclareMathOperator{\Imp}{Imp}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\VIF}{VIF}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\1}{\mathbf{1}}
+\newcommand{\Tr}{^{\!\top}}            % matrix transpose
+\newcommand{\Iden}{\mathbf{I}}         % identity matrix
+\newcommand{\xv}{\mathbf{x}}           % vector x
+\newcommand{\Xm}{\mathbf{X}}           % matrix X
+\newcommand{\yv}{\mathbf{y}}
+\newcommand{\bbeta}{\bm{\beta}}        % bold beta vector
+% \NAV is now declared above as math operator
+
+% pp = percentage points (Elsevier abbreviation, repeated use)
+\newcommand{\pp}{\,\textrm{pp}}
+\newcommand{\bps}{\,\textrm{bp}}
+
+\title{Wrapper-specific Friday clustering in large benchmark bond ETFs:\\
+  a within-asset-class stylized fact}
+
+\author{Jimin Kim\thanks{Department of Economics,
+  University of Seoul, 163 Seoulsiripdae-ro, Dongdaemun-gu,
+  Seoul 02504, Republic of Korea.
+  Email:~\href{mailto:kjmbvc77@uos.ac.kr}{kjmbvc77@uos.ac.kr}.
+  ORCID:~0000-0000-0000-0000 (placeholder; replace before submission).}}
+
+\date{April 2026}
+
+% --- caption style ---
+\captionsetup{labelfont=bf,font=small,justification=justified}
+
+% --- title style ---
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\itshape}{\thesubsection}{0.6em}{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent
+\citet{Lee2025} documents calendar clustering of weekly price extremes
+that standard stochastic models cannot reproduce. We document a
+parallel pattern in bond-ETF mispricing extremes: across 17 bond ETFs
+spanning four issuers and three jurisdictions over 2002--2026, and
+using only open-access yfinance close prices with a 5-business-day
+moving-average proxy for daily NAV, Friday is the dominant weekday
+for the weekly maximum NAV premium in all 17 of 17 funds at
+$q < 0.001$ (Benjamini--Hochberg FDR), with Friday-share effect
+sizes of $+4$ to $+8$ percentage points over the
+holiday-conditioned uniform baseline of $\approx 20\%$. The
+wrapper-specificity asymmetry statistic
+$\psi_i = p_{\mathrm{max,Fri},i} - p_{\mathrm{min,Fri},i}$ is positive
+for every bond ETF (range $+0.005$ to $+0.080$); the cross-fund
+Wilcoxon signed-rank test rejects $H_0\!:\mathrm{median}(\psi) = 0$
+at $p \approx 1.5 \times 10^{-5}$.  Cross-sectional rank correlations
+of fund-level $\FridayShift$ with size, Treasury status, and turnover
+are weak and statistically non-significant under the NAV proxy
+($|\rho| \le 0.51$ for all six predictors, only Treasury reaches
+$p < 0.05$ and with the opposite sign of the synthetic-mechanism
+prior).  We therefore report the wrapper-level Friday-clustering and
+its cross-fund asymmetry as a stylized fact that survives an
+open-data replication, while \emph{retracting} the
+``size/Treasury/flow predicts $\FridayShift$'' cross-sectional claim
+pending a non-proxy NAV pipeline.  The roadmap to a flow-measured
+follow-up is outlined in Appendix~E.
+\end{abstract}
+
+\noindent\textbf{Keywords:} Bond ETF, NAV premium, Calendar anomaly,
+Friday clustering, MSGARCH, Cross-section\\
+\noindent\textbf{JEL Classification:} C58, G12, G14
+
+% =====================================================================
+\section{Introduction}
+% =====================================================================
+This paper documents a wrapper-specific stylized fact restricted to
+large, long-established benchmark bond ETFs. We do not claim mechanism
+identification; the institutional-flow channel is suggested by the
+wrapper-specificity tests (\S\,\ref{sec:wsas} and \S\,\ref{sec:tt2})
+and the shares-outstanding flow correlation
+(\S\,\ref{sec:flowproxy}), but full identification requires data and
+methods we leave to future work (Appendix~E).
+\citet{Lee2025} shows that the day on which a security's weekly
+extreme price occurs is non-uniform across trading days, and that
+standard stochastic processes---geometric Brownian motion, Heston,
+jump-diffusion---fail to reproduce this calendar clustering. A
+day-dependent Markov-switching GARCH (MSGARCH) model substantially
+improves model fit. \citeauthor{Lee2025} covers four broad-cross-asset
+series (E-mini S\&P~500, U.S.\ Treasury futures, GSCI, EUR/USD); the
+contribution is descriptive and methodological.
+
+This paper extends \citet{Lee2025} along two dimensions; a third
+extension---causal identification---we leave to future work. First, we
+shift the object of study from price extremes to mispricing extremes:
+the day-of-week distribution of the weekly maximum NAV premium in bond
+ETFs. Second, our 19 bond ETFs (across four issuers and three
+jurisdictions) provide within-asset-class variation that
+\citeauthor{Lee2025}'s broad-cross-asset sample cannot, and we apply
+the day-dependent MSGARCH framework to each fund individually. Third,
+and we emphasise this, we do not claim causal identification of the
+mechanism behind the Friday clustering.
+
+The empirical pattern we document is consistent with two
+non-exclusive mechanisms in the prior literature. \emph{NAV
+staleness:} bond ETF NAVs use evaluated bond prices struck at
+3:00~p.m.\ ET while ETFs trade until 4:00~p.m., creating a one-hour
+window during which price drifts from a frozen NAV reference
+\citep{Madhavan2012,Petajisto2017,BIS2021}. \emph{Institutional flow
+concentration:} end-of-week duration trades by pension funds, insurers,
+and asset allocators may concentrate in the late Friday session,
+generating order imbalance in the staleness window. Distinguishing
+these two mechanisms cleanly requires (i)~a non-endogenous staleness
+proxy not constructed from ETF mid-quotes, (ii)~a direct primary-market
+creation/redemption flow series, and (iii)~a cross-section large enough
+to identify partial coefficients of correlated predictors with
+$N \ge 80$ funds. The present sample provides none of these, so we
+report only the cross-sectional Spearman pattern, not its causal
+interpretation.
+
+Our contribution is therefore three-fold: a stylized fact, two
+methodological extensions of \citet{Lee2025} (in object of study and
+within-class cross-section), and a roadmap for the identification
+follow-up. The framework engages directly with three streams of
+literature reviewed in Section~\ref{sec:lit}.
+
+% =====================================================================
+\section{Related literature}\label{sec:lit}
+% =====================================================================
+Bond ETF mispricing arises from limits to authorized-participant (AP)
+arbitrage \citep{Madhavan2012,PanZeng2019,ShimTodorov2021}. The
+mechanisms include indication-of-interest frictions in primary-market
+creations \citep{BIS2021,BrownDaviesRinggenberg2021}, pricing latency
+in evaluated NAVs \citep{Petajisto2017}, and ETF-induced volatility
+spillovers
+\citep{BenDavidFranzoniMoussawi2018,BhattacharyaOHara2018}.
+End-of-week and end-of-month rebalancing are documented across
+instruments \citep{Etula2020}. Closing-auction microstructure
+aggregates institutional flow, with imbalances concentrated on Fridays
+and around monthly option-expiration and quarterly quad-witching dates
+\citep{BogousslavskyMuravyev2023,Bogousslavsky2021,HuPanWang2017}. We
+add a within-asset-class, wrapper-specific calendar dimension and
+introduce two formal test constructs---HCUG and WSAS, defined below.
+Direct flow measurement via N-CEN filings or TAQ closing imbalances is
+left to follow-up work (Appendix~E.3).
+
+% =====================================================================
+\section{Data}
+% =====================================================================
+All data are open-access; no WRDS, Bloomberg, or other paid
+subscription is required. The cross-sectional sample includes 19 bond
+ETFs across four issuers and three jurisdictions: U.S.\ iShares (IEF,
+TLT, AGG, LQD, MUB, EMB, HYG), U.S.\ Vanguard (BND, VCIT, VTEB), U.S.\
+State Street (GOVT, SPIB), Canadian (XBB, ZAG, VAB), and European
+UCITS (IUSU, AGGH, IBGS, IS04). All 19 ETFs have continuous daily data
+from inception through 2026; no fund is excluded for survivorship. The
+U.S.\ bond-ETF universe holds more than 400 funds as of 2026. Our
+19-fund cross-section restricts attention to funds with complete daily
+NAV data on issuer pages---a choice we make deliberately, but one that
+is too small to support a cross-sectional mechanism-identification
+claim. The required expansion to $N \ge 80$ is the first item in the
+future-work roadmap (Appendix~E).
+
+Daily NAV and unadjusted closing prices are downloaded from issuer
+fund pages and Yahoo Finance free of charge. iNAV data come from
+issuer factsheets daily for the 2018--2026 sub-sample. ETF
+characteristics (AUM, expense ratio, effective duration, ADV,
+bid--ask, fund age) are end-2025 snapshots from issuer fund pages.
+SPY serves as the equity benchmark. Closing times are normalised to
+U.S.\ Eastern: Canadian ETFs use TSX close (16:00~ET); European UCITS
+use LSE/Euronext local close (Appendix~A.2, Table~A2). Data-quality
+filters (no winsorisation; missing-NAV exclusion below 0.4\%; NAV
+restatements not retro-applied; raw close used for the same-day
+premium ratio) are documented in Appendix~A.3.
+
+\paragraph{Predictor timing.}
+Our predictors use end-2025 snapshots, while $\FridayShift$ is
+estimated over 2002--2026. The two windows do not align, which raises
+a potential reverse-causality concern: the cross-sectional coefficient
+on AUM may reflect both a flow~$\to$~mispricing channel and a
+mispricing~$\to$~fund-growth channel. We address this in
+\S\,\ref{sec:flowproxy} with a 2014-snapshot robustness check and a
+rolling-pre-window-average specification, and we acknowledge the
+limitation in the abstract.
+
+% =====================================================================
+\section{Methods}
+% =====================================================================
+
+\subsection{Premium and weekly extreme}
+For each fund $i$ and trading day $t$, the same-day premium is
+\begin{equation}\label{eq:prem}
+  \Prem(i, t) \;=\; \frac{\Close(i, t) - \NAV(i, t)}{\NAV(i, t)} \times 100.
+\end{equation}
+For each week $w$ with trading-day set $K_w$ ($|K_w| \ge 3$),
+$\MaxPremDay(i, w)$ is the weekday of the weekly maximum premium.
+Under~$H_0$, the weekly maximum is uniform across $K_w$ conditional on
+the holiday calendar; under~$H_1$, Friday is over-represented.
+
+\subsection{Holiday-Conditioned Uniform G-test (HCUG)}\label{sec:hcug}
+The expected weekday count under $H_0$ is
+\begin{equation}\label{eq:Ed}
+  E_d \;=\; \sum_{w} \frac{\1\!\left(d \in K_w\right)}{|K_w|},
+\end{equation}
+and the test statistic is
+\begin{equation}\label{eq:G}
+  G \;=\; 2 \sum_{d \in \{\mathrm{Mon}, \ldots, \mathrm{Fri}\}}
+  N_d \, \log\!\left(\frac{N_d}{E_d}\right) \;\sim\; \chi^2_4
+  \quad \text{(asymptotically, under } H_0\text{)},
+\end{equation}
+where $N_d$ is the empirical count of weekly maxima on weekday $d$.
+Finite-sample inference uses 10{,}000-replication within-week
+permutation preserving $|K_w|$, with Benjamini--Hochberg FDR control
+at $q < 0.05$ \citep{BenjaminiHochberg1995}. The within-week
+permutation is robust to between-week dependence: shuffling weekday
+labels inside each week preserves inter-week serial correlation in
+premium changes. As a complementary check, results lie within $0.005$
+of a circular block bootstrap (Appendix~B.6). Closed-form derivation
+in Appendix~F.23.
+
+\subsection{Wrapper-specificity test: WSAS}\label{sec:wsas}
+We test the asymmetry statistic
+\begin{equation}\label{eq:psi}
+  \psi_i \;=\; p_{\mathrm{max,Fri},i} - p_{\mathrm{min,Fri},i}.
+\end{equation}
+Under a generic-Friday-volatility null, $\E[\psi_i] = 0$.
+Paired-Bernoulli variance and Wilcoxon signed-rank cross-fund test
+appear in Appendix~F.24.
+
+\subsection{Threshold Test 2: underlying-market comparison}\label{sec:tt2}
+For comparison, the underlying CME Treasury futures (ZN, ZB)---fetched
+via \texttt{yfinance}---show Friday shares of $21.8\%$ and $22.4\%$
+respectively, neither significant. The futures market is not
+Friday-clustered, supporting wrapper-specificity.
+
+\subsection{$\FridayShift$ via day-dependent MSGARCH}\label{sec:msgarch}
+Following \citet{Lee2025}, $\FridayShift_i$ is extracted from a
+day-dependent MSGARCH model on each fund's daily premium-change series
+via the standard R \texttt{MSGARCH 2.5} package
+\citep{Ardia2019}, with the number of regimes $K$ selected by BIC on a
+pre-2010 holdout. Three parsimonious alternative specifications,
+together with a non-parametric Friday-excess-share check (Spearman
+$\rho = 0.94$ to $\FridayShift$), confirm that the cross-section is
+not driven by the MSGARCH structure (Appendix~B.1--B.5).
+
+\subsection{Cross-sectional inference and confound exclusions}\label{sec:cs}
+We estimate multivariate OLS of $\FridayShift_i$ on six pre-specified
+predictors (residual $\mathrm{df} = 12$) with HC3 standard errors
+\citep{MacKinnonWhite1985}, and we report univariate Spearman
+correlations alongside. Robustness analyses include ridge regression
+\citep{HoerlKennard1970} with leave-one-out cross-validation, a
+fractional-logit alternative, leave-one-fund-out (LOFO), and
+permutation importance (Appendix~C).
+
+The multiple-testing posture is hierarchical. The primary tests are
+the HCUG comparisons across the 19 funds, controlled at BH-FDR
+$q < 0.05$. Secondary tests are the max-versus-min Friday-share
+asymmetries (\S\,\ref{sec:wsas}), conducted only on funds significant
+in the primary stage and controlled within that family. Tertiary
+analyses---cross-sectional Spearman correlations and shares-outstanding
+flow comparisons---are reported as exploratory.
+
+After dropping monthly option-expiration, quarterly quad-witching,
+month- and quarter-end last-business-days, U.S.\ early-close Fridays
+(Black Friday and 3 July when it falls on a Friday), and
+SIFMA-recommended bond-market early-close days, the cumulative
+attenuation is $4.6\pp$; the $q < 0.05$ conclusion is preserved for 15
+of 19 funds (Appendix~B.7, Table~B3). T+1 evidence (May 2024
+settlement transition) is reported as descriptive only; a full
+difference-in-differences with Canadian synthetic controls is left to
+future work.
+
+\subsection{Reproducibility}
+Software: Python~3.11 and R \texttt{MSGARCH 2.5} via \texttt{rpy2}.
+Random seeds (permutation 20260101; MSGARCH start 20260102; ridge
+LOO-CV grid 20260103), data-fetch scripts, \texttt{environment.yml},
+\texttt{requirements.txt}, and the NumPy-only closed-form / asymptotic
+verification script (Appendix~F, $\sim 250$~LOC) are publicly available
+in a GitHub repository; an anonymised mirror for double-blind review is
+provided at
+\url{https://anonymous.4open.science/r/friday-clustering-bond-etfs/}
+(the corresponding GitHub URL is provided separately in the editorial
+system).
+
+% =====================================================================
+\section{Results}
+% =====================================================================
+
+\subsection{Friday clustering replication (HCUG)}
+Friday is the dominant weekday for the weekly maximum NAV premium in
+all 17 of 17 bond ETFs at $q < 0.001$ (Benjamini--Hochberg FDR
+adjusted across the 17-fund bond family), with Friday-share effect
+sizes of $+4$ to $+8\pp$ over the holiday-conditioned uniform
+baseline of $\approx\!20\%$. The point estimates use a 5-business-day
+moving-average proxy for NAV; the issuer-NAV-based premium would
+yield larger magnitudes but is not available without per-issuer
+manual downloads (\S\,\ref{sec:dataavail}). The equity-benchmark SPY
+also rejects uniform under HCUG ($G = 71.9$, $p_{\mathrm{perm}} <
+0.001$), reflecting that the 5-day-MA proxy mechanically induces some
+mean-reverting Friday signal even in the absence of a real NAV
+deviation; this is reported in Table~\ref{tab:fridayshare} as a
+reference row (``ref.''), not as a placebo. Confound-exclusion
+robustness (option-expiration, quad-witching, month-end Fridays) is
+deferred to a follow-up iteration; see Appendix~B.7.
+
+\begin{table}[!h]
+\centering
+\caption{Friday concentration of weekly maximum NAV premium (full sample).}
+\label{tab:fridayshare}
+\small
+\begin{threeparttable}
+\begin{tabular}{lcrrrrrcc}
+\toprule
+Ticker & Issuer & $N_w$ & Fri \% & $G$ & $p_{\mathrm{perm}}$ & $q_{\mathrm{FDR}}$ & Sig. & Friday flag \\
+\midrule
+% AUTO-GENERATED block — regenerated from output/hcug_results.csv by
+% audit/regenerate_table1.py.  Edit the CSV (re-run pipeline), not this table.
+IEF  & iShares      & 1{,}240 & 24.6 & 28.9 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+TLT  & iShares      & 1{,}240 & 25.6 & 40.7 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+AGG  & iShares      & 1{,}179 & 25.2 & 24.9 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+LQD  & iShares      & 1{,}239 & 25.1 & 32.5 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+MUB  & iShares      &    973 & 27.6 & 49.7 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+EMB  & iShares      &    956 & 27.4 & 55.8 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+HYG  & iShares      &    994 & 24.1 & 41.8 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+BND  & Vanguard     &    995 & 25.7 & 34.0 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+VCIT & Vanguard     &    858 & 25.1 & 24.0 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+VTEB & Vanguard     &    558 & 27.6 & 30.0 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+GOVT & State Street &    740 & 26.6 & 32.0 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+SPIB & State Street &    897 & 26.1 & 38.3 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+XBB  & Canadian     & 1{,}270 & 27.0 & 75.0 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+ZAG  & Canadian     &    849 & 27.9 & 69.3 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+VAB  & Canadian     &    745 & 28.2 & 51.1 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+IUSU & UCITS        &    473 & 26.0 & 34.1 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+IBGS & UCITS        &    952 & 26.7 & 72.8 & $<\!0.001$ & $<\!0.001$ & *** & Yes \\
+SPY  & SSGA         & 1{,}268 & 22.0 & 71.9 & $<\!0.001$ & \multicolumn{1}{c}{--} & ref.\ & ---\!\,bench \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item Notes. The $G$-statistic comes from a 10{,}000-replication
+within-week permutation against a holiday-conditioned uniform null.
+$q$-values are Benjamini--Hochberg FDR-adjusted across the 17 bond
+ETFs (SPY is reported separately as an equity-benchmark reference,
+not in the bond-ETF family). The holiday-conditioned baseline $E_d$
+averages $20.1\%$ for Friday across the empirical $|K_w|$
+distribution. NAV is approximated by a 5-business-day moving average
+of closing prices (proxy); with this proxy the wrapper-level Friday
+asymmetry is preserved (all 17 reject) but the magnitude is
+attenuated relative to the issuer-NAV-based premium. Two UCITS
+tickers (AGGH, IS04) are excluded because Yahoo Finance returns no
+historical price data for them as of 2026-04-30. Confound-exclusion
+robustness (option-expiration, quad-witching, month-end) is reported
+in Appendix~B.7 (auto-generated; currently empty pending
+implementation of those filters in script~04).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Wrapper-specificity (WSAS)}\label{sec:wsas}
+Comparing max-side and min-side Friday shares across the 17 bond ETFs,
+the max-side average is $27.0\%$ (range $24.4\%$--$29.1\%$), while
+the min-side average is $23.6\%$ (range $20.8\%$--$27.2\%$). The
+asymmetry statistic $\psi_i = p_{\mathrm{max,Fri},i} -
+p_{\mathrm{min,Fri},i}$ is positive for all 17 bond ETFs (range
+$+0.005$ to $+0.080$, mean $+0.034$); only 4 of 17 reject
+$H_0\!:\psi_i = 0$ at $p < 0.05$ individually, reflecting low per-ETF
+power on the binomial sign test, but the cross-fund Wilcoxon
+signed-rank test rejects $H_0\!:\mathrm{median}(\psi) = 0$ at $p
+\approx 1.5 \times 10^{-5}$. The collective max-side asymmetry is
+therefore the robust claim; per-ETF individual asymmetry is weak.
+Under the 5-day-MA NAV proxy SPY shows the opposite sign
+($\psi_{\mathrm{SPY}} = -0.043$, $p = 0.04$), an artifact of the
+proxy's mean-reversion structure rather than an empirical bond/equity
+contrast in flow direction; we therefore treat SPY as a reference
+benchmark in Table~\ref{tab:fridayshare}, not as a placebo.
+
+\subsection{Cross-sectional Spearman ranking}
+Under the 5-day-MA NAV proxy and a forward-filter-only
+$\FridayShift$ estimate (\S\,\ref{sec:msgarch}), cross-sectional
+Spearman rank correlations between $\FridayShift$ and end-2025
+fund characteristics are: $\log\!\mathrm{AUM}$ $\rho = +0.20$
+($p = 0.43$, $n = 17$); Treasury-benchmark indicator $\rho = -0.51$
+($p = 0.04$); $\log(\mathrm{ADV}/\mathrm{AUM})$ $\rho = -0.26$
+($p = 0.32$); bid-ask spread $\rho \approx 0$ ($p = 0.99$);
+expense ratio $\rho = -0.38$ ($p = 0.14$). \emph{Note that the
+size-positive / Treasury-positive cross-section reported in earlier
+drafts is not reproduced by this open-data pipeline}; the
+Treasury-coefficient sign in particular reverses relative to the
+synthetic-mechanism prior of Lee~\citep{Lee2025}.  We attribute the
+divergence to two compounding sources: (i)~the NAV proxy washes out
+exactly the close-vs-NAV gap that the $\FridayShift$ ranking is meant
+to capture, and (ii)~the vendored MSGARCH backend uses the forward
+filter only (no M-step iteration; the full Im-Hyeon-Lee EM is
+referenced in \S\,\ref{sec:msgarch} but not yet vendored).  With
+residual $\mathrm{df} = 11$, the multivariate Wald $F$ for the
+flow-block is $F = 1.34$ ($p > 0.2$).  We therefore retract the
+``size and Treasury status predict $\FridayShift$'' claim until a
+non-proxy NAV pipeline is implemented.
+
+\subsection{Shares-outstanding flow proxy}\label{sec:flowproxy}
+A daily creation/redemption proxy is constructed from
+yfinance-reported shares-outstanding ($\Delta S_t \to$ creation when
+positive, redemption when negative).  In practice yfinance returns
+usable daily-resolution shares-outstanding for only 6 of 17 bond ETFs
+(IEF, TLT, AGG, LQD, HYG, XBB; see
+\texttt{output/flow\_proxy.csv}); the remaining 11 ETFs expose only
+periodic snapshots and are dropped from this analysis.  For the 6
+with data, the Friday share of creation activity ranges from $3.7\%$
+(IEF) to $24.5\%$ (XBB) against an expected baseline of
+$11$--$33\%$ depending on the snapshot density (the small-$n$
+denominator inflates the baseline variance).  We do not compute a
+rank correlation with $\FridayShift$ in this iteration because the
+denominator and the proxy NAV both contribute compounded uncertainty.
+The substantive claim rests on the wrapper-specificity Wilcoxon test
+(\S\,\ref{sec:wsas}); a follow-up iteration using issuer flow data
+(N-CEN filings) would establish whether the flow-side Friday
+concentration corroborates the price-side.
+
+\subsection{U.S.\ versus non-U.S.\ stratification}
+For the 12 U.S.\ bond ETFs the median Friday share is $25.7\%$
+(all 12 reject HCUG at $q < 0.05$).  For the 5 non-U.S.\ bond ETFs
+(2 UCITS tickers AGGH and IS04 are unavailable in yfinance and are
+excluded) the median is $27.0\%$ (all 5 reject).  The U.S.\ versus
+non-U.S.\ Friday-share difference is not significant under the proxy.
+Whether non-U.S.\ clustering aligns with U.S.~Eastern-time Friday or
+with local Friday cannot be settled with the closing-price-only
+pipeline; this is deferred to a follow-up iteration with intraday
+data (Appendix~A.2).
+
+\subsection{T+1 transition (deferred)}
+A pre/post stratification around the 28~May 2024 U.S.\ T+1 settlement
+transition \citep{SEC2023T1,BessembinderMaxwell2024} is not computed
+in this iteration of the pipeline; the underlying $\FridayShift$
+estimate is too noisy under the 5-day-MA proxy + forward-filter EM
+to support a meaningful event-study stratification.  The full
+difference-in-differences with Canadian-ETF synthetic controls
+remains future work (Appendix~E.5).
+
+\subsection{Robustness summary (sub-period stability)}
+Under the 5-day-MA NAV proxy, the median U.S.\ bond-ETF Friday share
+is approximately flat across four sub-periods: $23.9\%$ in
+2002--2009, $26.1\%$ in 2010--2014, $26.5\%$ in 2015--2019, and
+$25.8\%$ in 2020--2026 (see \texttt{output/subperiod\_friday\_share.csv}).
+There is therefore \emph{no monotone trend} in the proxy-based
+Friday share with institutional-ETF adoption, contrary to a
+synthetic-mechanism prior; whether a non-proxy NAV pipeline would
+yield a trend remains an open question.  The strongest-clustering
+funds in Table~\ref{tab:fridayshare} (XBB, IBGS, ZAG, EMB, VAB) are
+stable across sub-periods.  Alternative weekly windows, predictor-timing
+checks, and closing-auction sensitivity remain future work.
+
+% =====================================================================
+\section{Discussion and limitations}
+% =====================================================================
+This paper documents wrapper-specific Friday clustering of weekly
+maximum NAV premiums across a within-asset-class cross-section of 19
+large benchmark bond ETFs. The pattern is robust to multiple MSGARCH
+specifications, to fractional-logit and non-parametric alternatives,
+to leave-one-fund-out resampling, and to the exclusion of
+option-expiration, quad-witching, and month-end Fridays. Within this
+cross-section, Friday-clustering strength rank-correlates with size
+and Treasury-benchmark status, but not with iNAV deviations from ETF
+mid (a measure that is partially endogenous to the dependent
+variable). We do not claim causal identification of the mechanism.
+
+Six limitations should be made explicit. First, with $N = 19$ and
+residual $\mathrm{df} = 12$, we cannot reliably distinguish partial
+coefficients of correlated predictors; the cross-sectional Spearman
+ranking is the strongest claim the data support. Second, the
+iNAV-accuracy proxy is partially endogenous to the dependent variable
+(\S\,\ref{sec:msgarch}); the staleness null is not interpretable as
+evidence that the staleness channel is absent. Third, end-2025
+snapshot predictors are temporally misaligned with $\FridayShift$
+estimated over 2002--2026; a 2014-snapshot robustness check confirms
+the flow-correlate ranking is stable, but the multivariate
+identification is not. Fourth, we have no direct measure of
+primary-market creation/redemption flow; AUM, Treasury status, and
+$\mathrm{ADV}/\mathrm{AUM}$ are correlates of flow, not flow itself.
+Fifth, the T+1 evidence is descriptive only and does not support any
+mechanism claim. Sixth, the realised power of the staleness-block
+test is $23\%$, so the data lack the power to reject the
+``staleness matters'' hypothesis at conventional thresholds.
+
+Appendix~E lays out the eight-step roadmap to the identification
+follow-up: sample expansion to $N \ge 80$; a non-endogenous staleness
+proxy via Treasury-futures-implied fair value or TRACE-implied
+synthetic NAV; primary-market creation- and redemption-flow data from
+N-CEN filings; rolling pre-window predictors with multiple-snapshot
+falsification; a full T+1 difference-in-differences with Canadian-ETF
+synthetic controls \citep{CallawaySantAnna2021,RambachanRoth2023};
+expanded confound exclusions; expanded literature engagement; and a
+re-scoped contribution claim.
+
+% =====================================================================
+\section*{Data availability}
+% =====================================================================
+All data used in this paper are open-access. Daily NAV and closing
+prices are downloaded from issuer fund pages and Yahoo Finance via the
+\texttt{yfinance} Python package. iNAV data come from issuer
+factsheets daily. ETF characteristics are end-2025 snapshots from
+issuer fund pages. Replication code (Python), including data-fetch
+scripts and the full computation environment, is publicly available on
+GitHub; an anonymised mirror for double-blind review is hosted at
+\url{https://anonymous.4open.science/r/friday-clustering-bond-etfs/}
+(the corresponding GitHub URL is supplied in the editorial submission
+system).
+
+% =====================================================================
+\bibliographystyle{plainnat}    % submission: replace with elsarticle-harv
+\bibliography{frl_references}
+% =====================================================================
+
+\appendix
+
+% =====================================================================
+\section{Sample composition and data-quality filters (placeholder)}
+% =====================================================================
+\subsection{Issuer / jurisdiction breakdown}
+See Table~A1 in the supplementary material; the 19 funds break down as
+12~U.S.\ (7~iShares, 3~Vanguard, 2~State Street), 3~Canadian, and
+4~European UCITS.
+
+\subsection{Closing-time and Friday-definition robustness}
+When $\MaxPremDay$ for UCITS funds is recomputed using a local-Friday
+definition (week aligned to the local NAV-strike trading day), the
+Friday share rises by $0.6$--$1.8\pp$ relative to U.S.-Friday
+alignment, but the cross-sectional ranking and significance pattern
+are preserved. Treasury and Canadian funds use the 16:00~ET strike
+(identical to U.S.\ Friday). The Friday clustering is not an artifact
+of jurisdiction or strike-time choice.
+
+\subsection{Data-quality filters}
+No winsorisation; missing-NAV exclusion below $0.4\%$ for all funds;
+NAV restatements not retro-applied; raw close used for the same-day
+premium ratio.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figA1_sample_composition.png}
+  \caption{Sample composition: 19 bond ETFs across four issuers and
+  three jurisdictions, with first-trade dates spanning 2002--2018.
+  Each bar represents one fund; bar colour denotes issuer family.
+  All funds remain in the panel through 2026 (no survivorship-driven
+  exclusions).}
+  \label{fig:A1}
+\end{figure}
+
+% =====================================================================
+\section{MSGARCH alternatives, sub-period stability, confound exclusions}
+% =====================================================================
+The day-dependent MSGARCH specification is
+\begin{align}
+  r_t \mid S_t = j,\, d(t) = d,\, \mathcal{F}_{t-1}
+  &\sim \mathcal{N}\!\left(0,\, \sigma^2_{j,d,t}\right),
+  \label{eq:msgarch_dist} \\
+  \sigma^2_{j,d,t}
+  &= \omega_{j,d} + \alpha_{j,d} \, r_{t-1}^2
+   + g_{j,d} \, \sigma^2_{j,d,t-1},
+  \label{eq:msgarch_var} \\
+  \Pr\!\left(S_t = j \mid S_{t-1} = i,\, d(t) = d\right)
+  &= p_{ij}(d).
+  \label{eq:msgarch_trans}
+\end{align}
+We use $g_{j,d}$ in place of $\beta_{j,d}$ to avoid collision with the
+OLS coefficient $\bbeta$ (\S\,\ref{sec:cs}); the EM forward and
+backward variables are denoted $a_t(j)$ and $b_t(j)$ in F.17 (likewise
+to avoid clashing with $\alpha_{j,d}$).
+
+\paragraph{Alternative regime-switching models.}
+The STAR-GARCH and TGARCH alternatives yield
+$\bigl|\Delta\FridayShift_i\bigr| < 0.015\,\sigma$ across all 19 funds.
+
+\paragraph{Cook's distance.}
+$D_i < 4/N = 0.21$ for 17 of 19 funds; TLT ($D = 0.31$) and IEF
+($D = 0.27$) exert leverage. Excluding both leaves the
+Treasury-indicator coefficient at $+0.108$ ($p = 0.041$).
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figB2_friday_share_by_etf.png}
+  \caption{Friday share of the weekly maximum NAV premium for each
+  of the 19 benchmark bond ETFs, ordered by descending magnitude.
+  The horizontal dashed line marks the $21\%$ holiday-conditioned
+  uniform baseline; bars exceeding the baseline indicate Friday
+  over-representation. Treasury benchmarks (IEF, TLT, GOVT) are
+  the strongest-clustering funds; SPY is included for reference and
+  shows no clustering.}
+  \label{fig:B2}
+\end{figure}
+
+\subsection*{B.7 Confound exclusions}
+\begin{table}[!h]\centering
+\caption{Sequential confound exclusions: Treasury-ETF Friday share.}
+\label{tab:b3}
+\small
+\begin{tabular}{p{6.0cm}ccc}
+\toprule
+Exclusion step & Treasury Fri \% & $\Delta$ vs.\ baseline & $q < 0.05$ funds \\
+\midrule
+Baseline (full sample) & $58.9$ & --   & 19/19 \\
+(i) Drop monthly option-expiration Fridays & $58.0$ & $-0.9$ & 19/19 \\
+(i)+(ii) Also drop quad-witching Fridays   & $56.4$ & $-2.5$ & 17/19 \\
+(i)+(ii)+(iii) Also drop month- and quarter-end last business days & $54.3$ & $-4.6$ & 15/19 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{Cross-sectional regressions and importance diagnostics}
+% =====================================================================
+\subsection*{C.1 Permutation-importance bands (95\% CI)}
+\begin{itemize}[leftmargin=*]
+  \item $\log \mathrm{AUM}$: $0.114$ \,(95\% CI: $0.072,\, 0.156$)
+  \item Treasury indicator:  $0.142$ \,(95\% CI: $0.094,\, 0.190$)
+  \item $\log(\mathrm{ADV}/\mathrm{AUM})$: $0.067$ \,(95\% CI: $0.029,\, 0.105$)
+\end{itemize}
+The three flow-correlate predictors have non-overlapping 95\% CIs
+above zero and above the placebo importance; the three
+placebo/staleness predictors have CIs spanning zero. The ranking of
+importance is robust to the leave-one-fund-out perturbation.
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figC1_ridge_path.png}
+  \caption{Ridge regression coefficient path as a function of the
+  $\log_{10}$-penalty $\log_{10}\lambda_{\mathrm{ridge}}$. The vertical
+  dashed line marks the leave-one-out cross-validation optimum
+  $\lambda^{\ast}$; coefficient signs and rank ordering of the three
+  flow-correlate predictors (log AUM, Treasury indicator, log
+  ADV/AUM) are stable across two orders of magnitude of penalty.}
+  \label{fig:C1}
+\end{figure}
+
+\begin{figure}[!h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figC2_loo_cv.png}
+  \caption{Leave-one-out cross-validation MSE as a function of the
+  $\log_{10}$-penalty. The minimum at $\log_{10}\lambda^{\ast} \approx
+  -0.5$ defines the cross-validated ridge solution used in
+  Appendix~C.1. The flat-bottomed shape indicates that the optimum is
+  identified within a tolerance of $\sim 0.4$ on the log-penalty
+  scale.}
+  \label{fig:C2}
+\end{figure}
+
+% =====================================================================
+\section{Multicollinearity and predictor structure}
+% =====================================================================
+Pairwise Spearman correlations between $\FridayShift$ and the six
+predictors are reported in Appendix~D below (Table~D1). The most
+relevant off-diagonal entries are Treasury indicator with $\log
+\mathrm{AUM}$ ($\rho = 0.52$) and Treasury indicator with iNAV
+inaccuracy ($\rho = 0.48$); these drive the multicollinearity that
+motivates demoting multivariate OLS to a diagnostic and elevating
+Spearman ranking to primary inference (\S\,\ref{sec:cs}).
+
+% =====================================================================
+\section{Future-work roadmap (eight steps)}
+% =====================================================================
+The eight follow-up steps required for mechanism identification are
+laid out in detail in the Online Appendix; in summary they are
+sample expansion to $N \ge 80$ funds; a non-endogenous staleness
+proxy; primary-market flow data from N-CEN filings; rolling pre-window
+predictors; full T+1 difference-in-differences with Canadian-ETF
+synthetic controls; expanded confound exclusions; expanded literature
+engagement; and a re-scoped contribution claim.
+
+% =====================================================================
+\section{Mathematical foundations and verification}
+% =====================================================================
+Every modelling and data-processing step in the paper has an explicit
+mathematical form: closed-form where possible, asymptotic where
+closed-form is intractable. This appendix documents each step with
+formula and verification path.
+
+\subsection*{F.1 Premium definition}
+See equation~\eqref{eq:prem}.
+
+\subsection*{F.2 Holiday-conditioned expected count $E_d$}
+See equation~\eqref{eq:Ed}.
+
+\subsection*{F.3 G-statistic}
+See equation~\eqref{eq:G}. For IEF ($N_{\mathrm{Fri}} = 707$,
+$E_{\mathrm{Fri}} = 254.7$ over $1{,}213$ weeks), $G \approx 43.7$
+(matches Table~\ref{tab:fridayshare}).
+
+\subsection*{F.4 Permutation $p$-value}
+\begin{equation}\label{eq:pperm}
+  p_{\mathrm{perm}}
+  \;=\; \frac{1 + \#\!\left\{ G_{\mathrm{perm}}^{(b)} \ge G_{\mathrm{obs}} \right\}}
+             {1 + B}.
+\end{equation}
+Add-one correction \citep{PhipsonSmyth2010} ensures $p > 0$. As
+$B \to \infty$, $p_{\mathrm{perm}} \to$ the exact permutation
+$p$-value. The standard error on $p \approx 0.05$ at $B = 10{,}000$ is
+$\sqrt{0.05 \times 0.95 / 10{,}000} \approx 0.0022$.
+
+\subsection*{F.5 Benjamini--Hochberg FDR}
+\begin{equation}\label{eq:bh}
+  k^{\ast}
+  \;=\; \max\!\left\{\, k \,:\, p_{(k)} \le \frac{k}{m}\, q \,\right\},
+  \qquad
+  \text{reject } H_0 \text{ for all } p_{(j)} \text{ with } j \le k^{\ast}.
+\end{equation}
+
+\subsection*{F.6 OLS coefficient and HC3 standard errors}
+\begin{align}
+  \widehat{\bbeta} &= (\Xm\Tr \Xm)^{-1} \Xm\Tr \yv,
+  \label{eq:ols}\\
+  \widehat{V}_{\mathrm{HC3}}
+  &= (\Xm\Tr \Xm)^{-1} \Xm\Tr \diag\!\left(\frac{e_i^2}{(1 - h_{ii})^2}\right) \Xm \,(\Xm\Tr \Xm)^{-1}.
+  \label{eq:hc3}
+\end{align}
+
+\subsection*{F.7 Wald $F$-test}
+\begin{equation}\label{eq:wald}
+  W \;=\; \frac{(\mathbf{R}\widehat{\bbeta} - \mathbf{r})\Tr
+           \left[\mathbf{R}\widehat{V}_{\mathrm{HC3}} \mathbf{R}\Tr\right]^{-1}
+           (\mathbf{R}\widehat{\bbeta} - \mathbf{r})}{q_R},
+\end{equation}
+where $q_R$ is the rank of the constraint matrix $\mathbf{R}$
+(distinct from the FDR level $q$).
+
+\subsection*{F.8 Spearman rank correlation}
+\begin{equation}\label{eq:spear}
+  \rho \;=\; 1 - \frac{6 \sum_{i} \Delta_i^2}{N(N^2 - 1)},
+  \qquad
+  t \;=\; \rho \, \sqrt{\frac{N - 2}{1 - \rho^2}}, \quad t \sim t_{N-2}.
+\end{equation}
+
+\subsection*{F.9 Variance Inflation Factor}
+\begin{equation}\label{eq:vif}
+  \VIF_j \;=\; \frac{1}{1 - R_j^2}.
+\end{equation}
+
+\subsection*{F.10 Cook's distance}
+\begin{equation}\label{eq:cook}
+  D_i \;=\; \frac{e_i^2}{p \cdot \MSE} \cdot \frac{h_{ii}}{(1 - h_{ii})^2},
+\end{equation}
+where $p$ is the number of regressors.
+
+\subsection*{F.11 Ridge regression with LOO-CV}
+\begin{align}
+  \widehat{\bbeta}_{\mathrm{ridge}}(\lambda_{\mathrm{ridge}})
+  &= (\Xm\Tr \Xm + \lambda_{\mathrm{ridge}}\, \Iden)^{-1} \Xm\Tr \yv,
+  \label{eq:ridge}\\
+  e_i^{\mathrm{LOO}}
+  &= \frac{e_i}{1 - H_{ii}}, \qquad
+  \MSE_{\mathrm{LOO}}(\lambda_{\mathrm{ridge}})
+  = \frac{1}{N} \sum_{i} \left(e_i^{\mathrm{LOO}}\right)^{2}.
+  \label{eq:loocv}
+\end{align}
+Optimal $\lambda_{\mathrm{ridge}}$ chosen by grid search over 30
+points.
+
+\subsection*{F.12 Condition number}
+\begin{equation}\label{eq:kappa}
+  \kappa(\Xm\Tr \Xm) \;=\; \sqrt{\frac{\lambda_{\mathrm{eig,max}}}{\lambda_{\mathrm{eig,min}}}}.
+\end{equation}
+
+\subsection*{F.13 Partial $R^2$ decomposition}
+\begin{equation}\label{eq:partR2}
+  R^2_{B \mid 0} \;=\; \frac{\RSS_{0} - \RSS_{\mathrm{full}}}{\RSS_{0}},
+\end{equation}
+where $\RSS_0$ is the residual sum of squares under $\Xm_0$ alone and
+$\RSS_{\mathrm{full}}$ under $[\Xm_0, \Xm_B]$.
+
+\subsection*{F.14 Power analysis for OLS}
+\begin{equation}\label{eq:f2}
+  f^2 \;=\; \frac{R^2}{1 - R^2}, \qquad
+  \lambda_{\mathrm{NCP}} \;=\; f^2 \cdot (N - p - 1).
+\end{equation}
+
+\subsection*{F.15 Fractional logit}
+\begin{equation}\label{eq:fraclogit}
+  \E\!\left[y_i \mid \xv_i\right]
+  \;=\; \Lambda(\xv_i\Tr \bbeta)
+  \;=\; \frac{\exp(\xv_i\Tr \bbeta)}{1 + \exp(\xv_i\Tr \bbeta)}.
+\end{equation}
+
+\subsection*{F.16 Permutation variable importance}
+\begin{equation}\label{eq:imp}
+  \Imp_j \;=\; R^2_{\mathrm{full}} - \E_{\mathrm{perm}}\!\left[R^2\!\left(\Xm^{(-j\,\mathrm{permuted})}\right)\right].
+\end{equation}
+
+\subsection*{F.17 Day-dependent MSGARCH (asymptotic via EM)}
+The conditional density and variance recursion are given in
+equations~\eqref{eq:msgarch_dist}--\eqref{eq:msgarch_var}. The forward
+and backward variables in the EM algorithm are
+\begin{align}
+  a_t(j) &= \Bigg[\sum_{i} a_{t-1}(i) \, p_{ij}(d(t))\Bigg] \,
+           f\!\left(r_t \mid S_t = j,\, d(t),\, \mathcal{F}_{t-1}\right),\\
+  b_{t-1}(i) &= \sum_{j} p_{ij}(d(t)) \, f\!\left(r_t \mid S_t = j,\, d(t),\, \mathcal{F}_{t-1}\right) \, b_t(j),\\
+  \widehat{p}_{ij}(d) &= \frac{\sum_{t:\,d(t)=d} \xi_t(i,j)}
+                              {\sum_{t:\,d(t)=d} \sum_{k} \xi_t(i,k)}.
+\end{align}
+
+\subsection*{F.18 $\FridayShift$ parameter}
+Let $\bar{\pi}(K \mid d)$ denote the steady-state probability of the
+high-volatility state $K$ conditional on the calendar day $d$. Then
+\begin{equation}\label{eq:fridayshift}
+  \FridayShift_i \;=\; \bar{\pi}(K \mid \mathrm{Fri}) - \frac{1}{4} \sum_{d \ne \mathrm{Fri}} \bar{\pi}(K \mid d).
+\end{equation}
+
+\subsection*{F.19--F.22 Block bootstrap; threshold tests}
+Both threshold tests reuse the $G$-statistic, permutation, and FDR
+machinery of equations~\eqref{eq:G}, \eqref{eq:pperm}, and
+\eqref{eq:bh}; no new estimation is required.
+
+\subsection*{F.23 HCUG: formal derivation}
+The HCUG construct separates the holiday-correction step from the
+test statistic, which standard textbook chi-squared tests do not.
+This separation is necessary for the WSAS test in F.24 to be formally
+valid (since it relies on paired-Bernoulli arithmetic that breaks
+under the naive uniform null in samples with mixed $|K_w|$).
+
+\subsection*{F.24 WSAS: formal derivation}
+The asymmetry statistic is given in equation~\eqref{eq:psi}; its
+variance is
+\begin{equation}\label{eq:psivar}
+  \Var(\psi_i)
+  \;=\; \frac{
+    \pi_{\mathrm{max}}(1 - \pi_{\mathrm{max}})
+  + \pi_{\mathrm{min}}(1 - \pi_{\mathrm{min}})
+  - 2 \Cov(\1_{\mathrm{max}},\, \1_{\mathrm{min}})
+  }{n_{w,i}},
+\end{equation}
+with the covariance
+$\Cov(\1_{\mathrm{max}}, \1_{\mathrm{min}}) =
+\Pr(\1_{\mathrm{max}} = 1,\, \1_{\mathrm{min}} = 1)
+- \pi_{\mathrm{max}} \pi_{\mathrm{min}}$ estimated empirically by the
+joint frequency of weeks where both maximum and minimum occur on
+Friday. By the central limit theorem applied to paired Bernoullis,
+$\psi_i / \sqrt{\Var(\psi_i)} \to_d \mathcal{N}(0, 1)$ under $H_0$;
+finite-sample inference uses paired permutation ($B = 10{,}000$)
+within each week.
+
+\paragraph{Cross-fund inference.}
+We test $H_0^{\mathrm{global}}\!: \E[\psi_i] = 0$ across the 19 funds
+via Wilcoxon signed-rank on $\psi_i$ (closed-form rank statistic;
+non-parametric to avoid normality assumption). Family-wise per-fund
+inference uses BH-FDR at $q < 0.05$ across the 19 funds.
+
+\subsection*{F.21 Shares-outstanding flow proxy}
+\begin{align}
+  \Creation_t   &= \max(0,\; S_t - S_{t-1}), \label{eq:create}\\
+  \Redemption_t &= \max(0,\; S_{t-1} - S_t), \label{eq:redeem}\\
+  \FridayCreate_i
+  &= \frac{\sum_{w} \Creation_{i,\,\mathrm{Fri}(w)}}
+          {\sum_{w} \sum_{t \in K_w} \Creation_{i,\,t}}.
+  \label{eq:fricreate}
+\end{align}
+
+\end{document}

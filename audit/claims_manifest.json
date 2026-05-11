@@ -1,0 +1,1168 @@
+{
+  "schema_version": "1.0",
+  "_README": "Master registry of every numerical claim in paper/frl_paper.tex. Edit audit/build_manifest.py and re-run to regenerate. See audit/README.md for the audit principle.",
+  "claims": [
+    {
+      "section_id": "abstract",
+      "entries": [
+        {
+          "id": "abs_sig_count_at_q05",
+          "tex_section": "Abstract",
+          "tex_line": 127,
+          "claim_text": "all 17 of 17 funds at q<0.001",
+          "paper_value": 17,
+          "kind": "csv_aggregate",
+          "csv_path": "output/hcug_results.csv",
+          "filter": {
+            "sig_flag": 1
+          },
+          "value_column": "sig_flag",
+          "aggregate": "count",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 1,
+          "severity": "HARD"
+        },
+        {
+          "id": "abs_effect_size_low",
+          "tex_section": "Abstract",
+          "tex_line": 128,
+          "claim_text": "effect sizes +4 to +8 pp over baseline",
+          "paper_value": 4.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "excess_fri_pp_min"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "abs_effect_size_high",
+          "tex_section": "Abstract",
+          "tex_line": 128,
+          "claim_text": "effect sizes +4 to +8 pp over baseline",
+          "paper_value": 8.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "excess_fri_pp_max"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "abs_rho_aum",
+          "tex_section": "Abstract",
+          "tex_line": 131,
+          "claim_text": "log AUM rho = +0.20 (n.s.)",
+          "paper_value": 0.2,
+          "kind": "json",
+          "json_path": "output/spearman_predictors.json",
+          "key_path": [
+            "log_aum",
+            "rho"
+          ],
+          "tolerance_type": "correlation_rho",
+          "severity": "HARD"
+        },
+        {
+          "id": "abs_rho_treasury",
+          "tex_section": "Abstract",
+          "tex_line": 131,
+          "claim_text": "Treasury rho = -0.51 (p=0.04, opposite sign of synthetic prior)",
+          "paper_value": -0.51,
+          "kind": "json",
+          "json_path": "output/spearman_predictors.json",
+          "key_path": [
+            "treasury",
+            "rho"
+          ],
+          "tolerance_type": "correlation_rho",
+          "severity": "HARD"
+        },
+        {
+          "id": "abs_wilcoxon_p_order",
+          "tex_section": "Abstract",
+          "claim_text": "Wilcoxon p approx 1.5e-05",
+          "paper_value": 1.5e-05,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_wilcoxon_p"
+          ],
+          "tolerance_abs": 5e-05,
+          "tolerance_type": "p_value_qualitative",
+          "severity": "HARD"
+        }
+      ]
+    },
+    {
+      "section_id": "section_5_1_hcug",
+      "entries": [
+        {
+          "id": "s51_sig_at_q05",
+          "tex_section": "5.1 HCUG",
+          "tex_line": 367,
+          "claim_text": "all 17 of 17 bond ETFs at q < 0.001",
+          "paper_value": 17,
+          "kind": "csv_aggregate",
+          "csv_path": "output/hcug_results.csv",
+          "filter": {
+            "sig_flag": 1
+          },
+          "value_column": "sig_flag",
+          "aggregate": "count",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 1,
+          "severity": "HARD"
+        },
+        {
+          "id": "s51_sig_at_q001",
+          "tex_section": "5.1 HCUG",
+          "claim_text": "17 of 17 bond ETFs at q<0.001",
+          "paper_value": 17,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "sig_count_q01"
+          ],
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 1,
+          "severity": "HARD"
+        },
+        {
+          "id": "s51_baseline",
+          "tex_section": "5.1 HCUG",
+          "claim_text": "holiday-conditioned baseline ~20%",
+          "paper_value": 20.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "baseline_E_fri_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        }
+      ]
+    },
+    {
+      "section_id": "section_5_2_wsas",
+      "entries": [
+        {
+          "id": "s52_max_side_mean",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "max-side average 27.0%",
+          "paper_value": 27.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_p_max_fri_mean_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_min_side_mean",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "min-side average 23.6%",
+          "paper_value": 23.6,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_p_min_fri_mean_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_psi_low",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "psi range low = +0.005",
+          "paper_value": 0.005,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "psi_min"
+          ],
+          "tolerance_type": "psi_asymmetry",
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_psi_high",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "psi range high = +0.080",
+          "paper_value": 0.08,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "psi_max"
+          ],
+          "tolerance_type": "psi_asymmetry",
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_psi_sig_count",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "4 of 17 bond ETFs reject psi=0 at p<0.05",
+          "paper_value": 4,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "psi_sig_count"
+          ],
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 1,
+          "severity": "HARD"
+        }
+      ]
+    },
+    {
+      "section_id": "section_5_3_spearman",
+      "entries": [
+        {
+          "id": "s53_rho_aum",
+          "tex_section": "5.3 Spearman",
+          "claim_text": "log AUM rho = +0.20 (p=0.43)",
+          "paper_value": 0.2,
+          "kind": "json",
+          "json_path": "output/spearman_predictors.json",
+          "key_path": [
+            "log_aum",
+            "rho"
+          ],
+          "tolerance_type": "correlation_rho",
+          "severity": "HARD"
+        },
+        {
+          "id": "s53_rho_treasury",
+          "tex_section": "5.3 Spearman",
+          "claim_text": "Treasury indicator rho = -0.51 (p=0.04, opposite sign of prior)",
+          "paper_value": -0.51,
+          "kind": "json",
+          "json_path": "output/spearman_predictors.json",
+          "key_path": [
+            "treasury",
+            "rho"
+          ],
+          "tolerance_type": "correlation_rho",
+          "severity": "HARD"
+        },
+        {
+          "id": "s53_rho_advaum",
+          "tex_section": "5.3 Spearman",
+          "claim_text": "log(ADV/AUM) rho = -0.26 (p=0.32)",
+          "paper_value": -0.26,
+          "kind": "json",
+          "json_path": "output/spearman_predictors.json",
+          "key_path": [
+            "log_advaum",
+            "rho"
+          ],
+          "tolerance_type": "correlation_rho",
+          "severity": "HARD"
+        },
+        {
+          "id": "s53_rho_expense",
+          "tex_section": "5.3 Spearman",
+          "claim_text": "expense ratio rho = -0.38 (p=0.14)",
+          "paper_value": -0.38,
+          "kind": "json",
+          "json_path": "output/spearman_predictors.json",
+          "key_path": [
+            "expense",
+            "rho"
+          ],
+          "tolerance_type": "correlation_rho",
+          "severity": "HARD"
+        },
+        {
+          "id": "s53_wald_F_flow",
+          "tex_section": "5.3 Spearman",
+          "claim_text": "flow-block Wald F = 1.34",
+          "paper_value": 1.34,
+          "kind": "json",
+          "json_path": "output/cross_sectional_diag.json",
+          "key_path": [
+            "wald_F_flow"
+          ],
+          "tolerance_type": "wald_F",
+          "tolerance_abs": 0.4,
+          "severity": "HARD"
+        }
+      ]
+    },
+    {
+      "section_id": "table_1",
+      "entries": [
+        {
+          "id": "tab1_IEF_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "IEF Friday share = 24.6%",
+          "paper_value": 24.6,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IEF",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_IEF_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "IEF G-statistic = 28.9",
+          "paper_value": 28.9,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IEF",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_IEF_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "IEF N_weeks = 1240",
+          "paper_value": 1240,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IEF",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_TLT_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "TLT Friday share = 25.6%",
+          "paper_value": 25.6,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "TLT",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_TLT_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "TLT G-statistic = 40.7",
+          "paper_value": 40.7,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "TLT",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_TLT_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "TLT N_weeks = 1240",
+          "paper_value": 1240,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "TLT",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_AGG_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "AGG Friday share = 25.2%",
+          "paper_value": 25.2,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "AGG",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_AGG_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "AGG G-statistic = 24.9",
+          "paper_value": 24.9,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "AGG",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_AGG_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "AGG N_weeks = 1179",
+          "paper_value": 1179,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "AGG",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_LQD_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "LQD Friday share = 25.1%",
+          "paper_value": 25.1,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "LQD",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_LQD_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "LQD G-statistic = 32.5",
+          "paper_value": 32.5,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "LQD",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_LQD_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "LQD N_weeks = 1239",
+          "paper_value": 1239,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "LQD",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_MUB_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "MUB Friday share = 27.6%",
+          "paper_value": 27.6,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "MUB",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_MUB_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "MUB G-statistic = 49.7",
+          "paper_value": 49.7,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "MUB",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_MUB_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "MUB N_weeks = 973",
+          "paper_value": 973,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "MUB",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_EMB_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "EMB Friday share = 27.4%",
+          "paper_value": 27.4,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "EMB",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_EMB_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "EMB G-statistic = 55.8",
+          "paper_value": 55.8,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "EMB",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_EMB_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "EMB N_weeks = 956",
+          "paper_value": 956,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "EMB",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_HYG_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "HYG Friday share = 24.1%",
+          "paper_value": 24.1,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "HYG",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_HYG_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "HYG G-statistic = 41.8",
+          "paper_value": 41.8,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "HYG",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_HYG_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "HYG N_weeks = 994",
+          "paper_value": 994,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "HYG",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_BND_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "BND Friday share = 25.7%",
+          "paper_value": 25.7,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "BND",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_BND_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "BND G-statistic = 34.0",
+          "paper_value": 34.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "BND",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_BND_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "BND N_weeks = 995",
+          "paper_value": 995,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "BND",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_VCIT_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "VCIT Friday share = 25.1%",
+          "paper_value": 25.1,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VCIT",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_VCIT_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "VCIT G-statistic = 24.0",
+          "paper_value": 24.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VCIT",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_VCIT_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "VCIT N_weeks = 858",
+          "paper_value": 858,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VCIT",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_VTEB_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "VTEB Friday share = 27.6%",
+          "paper_value": 27.6,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VTEB",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_VTEB_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "VTEB G-statistic = 30.0",
+          "paper_value": 30.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VTEB",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_VTEB_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "VTEB N_weeks = 558",
+          "paper_value": 558,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VTEB",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_GOVT_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "GOVT Friday share = 26.6%",
+          "paper_value": 26.6,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "GOVT",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_GOVT_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "GOVT G-statistic = 32.0",
+          "paper_value": 32.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "GOVT",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_GOVT_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "GOVT N_weeks = 740",
+          "paper_value": 740,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "GOVT",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_SPIB_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "SPIB Friday share = 26.1%",
+          "paper_value": 26.1,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "SPIB",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_SPIB_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "SPIB G-statistic = 38.3",
+          "paper_value": 38.3,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "SPIB",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_SPIB_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "SPIB N_weeks = 897",
+          "paper_value": 897,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "SPIB",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_XBB_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "XBB Friday share = 27.0%",
+          "paper_value": 27.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "XBB",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_XBB_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "XBB G-statistic = 75.0",
+          "paper_value": 75.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "XBB",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_XBB_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "XBB N_weeks = 1270",
+          "paper_value": 1270,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "XBB",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_ZAG_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "ZAG Friday share = 27.9%",
+          "paper_value": 27.9,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "ZAG",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_ZAG_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "ZAG G-statistic = 69.3",
+          "paper_value": 69.3,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "ZAG",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_ZAG_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "ZAG N_weeks = 849",
+          "paper_value": 849,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "ZAG",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_VAB_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "VAB Friday share = 28.2%",
+          "paper_value": 28.2,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VAB",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_VAB_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "VAB G-statistic = 51.1",
+          "paper_value": 51.1,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VAB",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_VAB_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "VAB N_weeks = 745",
+          "paper_value": 745,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "VAB",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_IUSU_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "IUSU Friday share = 26.0%",
+          "paper_value": 26.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IUSU",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_IUSU_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "IUSU G-statistic = 34.1",
+          "paper_value": 34.1,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IUSU",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_IUSU_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "IUSU N_weeks = 473",
+          "paper_value": 473,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IUSU",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_IBGS_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "IBGS Friday share = 26.7%",
+          "paper_value": 26.7,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IBGS",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_IBGS_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "IBGS G-statistic = 72.8",
+          "paper_value": 72.8,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IBGS",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_IBGS_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "IBGS N_weeks = 952",
+          "paper_value": 952,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "IBGS",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        },
+        {
+          "id": "tab1_SPY_fri_pct",
+          "tex_section": "Table 1",
+          "claim_text": "SPY Friday share = 22.0%",
+          "paper_value": 22.0,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "SPY",
+          "value_column": "fri_pct",
+          "tolerance_type": "percentage_pp",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_SPY_G_stat",
+          "tex_section": "Table 1",
+          "claim_text": "SPY G-statistic = 71.9",
+          "paper_value": 71.9,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "SPY",
+          "value_column": "G_stat",
+          "tolerance_type": "g_statistic",
+          "severity": "HARD"
+        },
+        {
+          "id": "tab1_SPY_N_weeks",
+          "tex_section": "Table 1",
+          "claim_text": "SPY N_weeks = 1268",
+          "paper_value": 1268,
+          "kind": "csv",
+          "csv_path": "output/hcug_results.csv",
+          "lookup_key": "ticker",
+          "lookup_val": "SPY",
+          "value_column": "N_weeks",
+          "tolerance_type": "integer_count",
+          "tolerance_abs": 40,
+          "severity": "SOFT",
+          "_note": "small N_weeks slack OK: depends on yfinance trading-day count vs paper's calendar"
+        }
+      ]
+    },
+    {
+      "section_id": "deferred",
+      "entries": [
+        {
+          "id": "s55_us_median_fri",
+          "tex_section": "5.5 US/non-US",
+          "claim_text": "median Friday share 25.7% (12 US bond ETFs)",
+          "paper_value": 25.7,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "us_median_fri_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 0.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s55_nonus_median_fri",
+          "tex_section": "5.5 US/non-US",
+          "claim_text": "median Friday share 27.0% (5 non-US bond ETFs)",
+          "paper_value": 27.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "nonus_median_fri_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 0.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s57_subperiod_2002",
+          "tex_section": "5.7 Sub-period",
+          "claim_text": "23.9% in 2002-2009 sub-period (median, 9 US bond ETFs available)",
+          "paper_value": 23.9,
+          "kind": "csv",
+          "csv_path": "output/subperiod_friday_share.csv",
+          "lookup_key": "subperiod",
+          "lookup_val": "2002-2009",
+          "value_column": "fri_pct_median",
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s57_subperiod_2010",
+          "tex_section": "5.7 Sub-period",
+          "claim_text": "26.1% in 2010-2014 sub-period",
+          "paper_value": 26.1,
+          "kind": "csv",
+          "csv_path": "output/subperiod_friday_share.csv",
+          "lookup_key": "subperiod",
+          "lookup_val": "2010-2014",
+          "value_column": "fri_pct_median",
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s57_subperiod_2015",
+          "tex_section": "5.7 Sub-period",
+          "claim_text": "26.5% in 2015-2019 sub-period",
+          "paper_value": 26.5,
+          "kind": "csv",
+          "csv_path": "output/subperiod_friday_share.csv",
+          "lookup_key": "subperiod",
+          "lookup_val": "2015-2019",
+          "value_column": "fri_pct_median",
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s57_subperiod_2020",
+          "tex_section": "5.7 Sub-period",
+          "claim_text": "25.8% in 2020-2026 sub-period",
+          "paper_value": 25.8,
+          "kind": "csv",
+          "csv_path": "output/subperiod_friday_share.csv",
+          "lookup_key": "subperiod",
+          "lookup_val": "2020-2026",
+          "value_column": "fri_pct_median",
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "baseline_pct",
+          "tex_section": "4 (HCUG)",
+          "claim_text": "20% holiday-conditioned baseline",
+          "paper_value": 20.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "baseline_E_fri_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s54_flow_rho_paper",
+          "tex_section": "5.4 Flow",
+          "claim_text": "rho(FridayShift, flow proxy) -- not computed under proxy NAV",
+          "paper_value": null,
+          "kind": "computed",
+          "expr": "0",
+          "tolerance_type": "correlation_rho",
+          "severity": "DEFERRED",
+          "_note": "Paper draft now states this is deferred; manifest tracks for completeness."
+        },
+        {
+          "id": "s56_t1_pre",
+          "tex_section": "5.6 T+1",
+          "claim_text": "T+1 pre/post stratification -- deferred to future work",
+          "paper_value": null,
+          "kind": "computed",
+          "expr": "0",
+          "tolerance_type": "percentage_pp",
+          "severity": "DEFERRED",
+          "_note": "Requires non-proxy NAV to be meaningful."
+        }
+      ]
+    }
+  ]
+}

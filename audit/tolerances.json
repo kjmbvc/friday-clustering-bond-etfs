@@ -1,0 +1,31 @@
+{
+  "_comment": "Per-claim-type tolerance rules.  See claims_manifest.json for which type each claim uses.",
+  "percentage_pp": {
+    "tolerance_abs": 1.5,
+    "_doc": "Percentage points.  e.g., paper says 58.3%, code gives 56.9% -> delta 1.4 -> PASS"
+  },
+  "correlation_rho": {
+    "tolerance_abs": 0.05,
+    "_doc": "Spearman / Pearson rho.  e.g., paper says +0.62, code gives +0.59 -> delta 0.03 -> PASS"
+  },
+  "g_statistic": {
+    "tolerance_rel": 0.10,
+    "_doc": "G-statistics for HCUG.  Relative tolerance 10% because permutation noise."
+  },
+  "integer_count": {
+    "tolerance_abs": 0,
+    "_doc": "Counts like '16 of 19' must match exactly."
+  },
+  "p_value_qualitative": {
+    "tolerance_abs": null,
+    "_doc": "p-values are matched by significance band (<0.001, <0.01, <0.05, n.s.) not exact."
+  },
+  "wald_F": {
+    "tolerance_rel": 0.15,
+    "_doc": "Wald F-stats.  Loose tolerance because regression sample sensitive."
+  },
+  "psi_asymmetry": {
+    "tolerance_abs": 0.03,
+    "_doc": "psi = p_max_fri - p_min_fri.  Tight tolerance because directly computed."
+  }
+}
