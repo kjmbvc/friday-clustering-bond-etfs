@@ -1,4 +1,4 @@
-# Friday clustering of bond ETF mispricing — replication code
+# Friday clustering of bond ETF mispricing -- replication code
 
 Replication code for:
 
@@ -17,16 +17,16 @@ issuer factsheets, reproduces every numerical result in the manuscript:
 | 02 | `02_fetch_inav_factsheets.py` | iNAV from issuer factsheet PDFs (manual download) | `data/raw/<TICKER>_inav.csv` |
 | 03 | `03_compute_premium.py` | `Prem(i,t) = (Close - NAV) / NAV * 100` | `data/processed/premiums.csv` |
 | 04 | `04_hcug_test.py` | Holiday-Conditioned Uniform G-test, 10k permutations, BH-FDR | `output/hcug_results.csv` (Table 1) |
-| 05 | `05_wsas_asymmetry.py` | Wrapper-Specificity Asymmetry Statistic ψᵢ + Wilcoxon | `output/wsas_results.csv` |
-| 06 | `06_msgarch_via_rpy2.py` | Day-dependent MSGARCH FridayShift (rpy2 → Python EM → proxy) | `output/fridayshift.csv` |
+| 05 | `05_wsas_asymmetry.py` | Wrapper-Specificity Asymmetry Statistic psiᵢ + Wilcoxon | `output/wsas_results.csv` |
+| 06 | `06_msgarch_via_rpy2.py` | Day-dependent MSGARCH FridayShift (rpy2 -> Python EM -> proxy) | `output/fridayshift.csv` |
 | 07 | `07_cross_sectional_ols.py` | OLS + HC3, ridge LOO-CV, Wald F | `output/cross_sectional.csv` |
-| 08 | `08_shares_outstanding_flow.py` | Daily creation/redemption from ΔS | `output/flow_proxy.csv` |
+| 08 | `08_shares_outstanding_flow.py` | Daily creation/redemption from delta-S | `output/flow_proxy.csv` |
 | 09 | `09_make_figures.py` | figA1, figB2, figC1, figC2 | `output/figures/*.png` |
 | ✓  | `verification/appendix_F_verification.py` | Closed-form numpy-only verification of every method | prints `ALL CHECKS PASS` |
 
 ## Quick start
 
-### Option A — pip / venv (recommended)
+### Option A -- pip / venv (recommended)
 
 ```bash
 python -m venv .venv
@@ -46,7 +46,7 @@ python code/09_make_figures.py
 python verification/appendix_F_verification.py     # MUST end with "ALL CHECKS PASS"
 ```
 
-### Option B — conda (Linux/macOS, includes R for MSGARCH)
+### Option B -- conda (Linux/macOS, includes R for MSGARCH)
 
 ```bash
 conda env create -f environment.yml
@@ -75,14 +75,14 @@ The 20 canonical issuer factsheet URLs are written to
 
 Script 06 will pick whichever backend is installed, in this order:
 
-1.  **`rpy2` + R-MSGARCH 2.5** — the rigorous Bauwens *et al.* package.
+1.  **`rpy2` + R-MSGARCH 2.5** -- the rigorous Bauwens *et al.* package.
     Requires R 4.x and `install.packages('MSGARCH')` plus `pip install rpy2`.
-2.  **Python EM** — pure-Python forward filter, vendored and lightly
+2.  **Python EM** -- pure-Python forward filter, vendored and lightly
     adapted from
     [Im-Hyeon-Lee/Day-dependent-Markov-switching-GARCH-model](https://github.com/Im-Hyeon-Lee/Day-dependent-Markov-switching-GARCH-model)
     (the reference implementation accompanying Lee, 2025).  Requires
     `scikit-learn` for the K-means initializer.
-3.  **30-day rolling-vol tertile proxy** — numpy-only fallback, matches the
+3.  **30-day rolling-vol tertile proxy** -- numpy-only fallback, matches the
     sign and ordering of FridayShift but not the magnitude.
 
 Force a specific backend with `--method {rpy2,python,proxy}`.
@@ -105,7 +105,7 @@ metadata in `data/fund_metadata.csv` and `docs/ETF_LIST.md`.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT -- see `LICENSE`.
 
 ## Citation
 

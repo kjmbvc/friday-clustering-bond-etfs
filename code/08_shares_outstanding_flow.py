@@ -116,9 +116,9 @@ def expected_friday_pct(dates: pd.Series) -> float:
     """Holiday-conditioned expected Friday share for these business days."""
     if len(dates) == 0:
         return float("nan")
-    dt = pd.to_datetime(dates)
-    weeks = dt.to_series().dt.to_period("W-FRI")
-    df = pd.DataFrame({"date": dt, "weekday": dt.dt.weekday, "week": weeks.values})
+    dt = pd.to_datetime(pd.Series(list(dates)).reset_index(drop=True))
+    weeks = dt.dt.to_period("W-FRI")
+    df = pd.DataFrame({"date": dt.values, "weekday": dt.dt.weekday.values, "week": weeks.values})
     df = df.loc[df["weekday"] <= 4]
     by_week = df.groupby("week")["weekday"].apply(lambda s: sorted(set(s.astype(int))))
     by_week = by_week[by_week.apply(lambda K: len(K) >= 3)]

@@ -10,7 +10,7 @@ yfinance>=0.2.40,<0.3
 # iNAV PDF parsing (script 02)
 pypdf>=4.0,<5.0
 
-# OPTIONAL — only for the MSGARCH 2.5 backend in script 06.
+# OPTIONAL -- only for the MSGARCH 2.5 backend in script 06.
 # Requires R 4.x with `install.packages('MSGARCH')` already installed system-wide.
 # Uncomment if you have R + MSGARCH:
 # rpy2>=3.5,<4.0
