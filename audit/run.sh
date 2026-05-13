@@ -51,11 +51,21 @@ echo "[run] Verification stage"
 $PY verification/appendix_F_verification.py 2>&1 | tail -3
 
 echo
-echo "[run] Audit stage"
+echo "[run] Audit stage -- claims (paper vs code)"
 $PY audit/extract_claims.py
 $PY audit/compare.py
 $PY audit/report.py
 
 echo
-echo "[run] Report at audit/REPORT.md"
-echo "      $REPO/audit/REPORT.md"
+echo "[run] Audit stage -- code provenance (vendored vs upstream + license + originality)"
+# Network access can fail in restricted environments; allow --offline override.
+if [[ "${OFFLINE_PROVENANCE:-0}" == "1" ]]; then
+  $PY audit/check_provenance.py --offline
+else
+  $PY audit/check_provenance.py
+fi
+
+echo
+echo "[run] Reports:"
+echo "       audit/REPORT.md             (paper-vs-code claims)"
+echo "       audit/PROVENANCE_REPORT.md  (vendored code provenance + license + originality)"

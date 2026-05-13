@@ -74,27 +74,40 @@ friday-clustering-bond-etfs/
 │   ├── 03_compute_premium.py               Prem = (close - nav) / nav * 100
 │   ├── 04_hcug_test.py                     HCUG G-stat + 10k permutation + BH-FDR
 │   ├── 05_wsas_asymmetry.py                psi_i + sign test + Wilcoxon
-│   ├── 06_msgarch_via_rpy2.py              FridayShift (rpy2 / Python EM / proxy)
+│   ├── 06_msgarch_via_rpy2.py              FridayShift wrapper -- ORIGINAL; imports the EM from vendored module
 │   ├── 07_cross_sectional_ols.py           OLS + HC3 + ridge LOO-CV
 │   ├── 08_shares_outstanding_flow.py       creation/redemption from yfinance
 │   ├── 09_make_figures.py                  figA1, figB2, figC1, figC2
-│   └── 10_audit_inputs.py                  aggregate stats + Spearman + sub-period
+│   ├── 10_audit_inputs.py                  aggregate stats + Spearman + sub-period
+│   └── _vendored_msgarch_lee2025/          THIRD-PARTY (Lee 2025, MIT) -- see PROVENANCE.md
+│       ├── LICENSE                         verbatim upstream MIT license
+│       ├── PROVENANCE.md                   upstream URL, pinned commit, divergence log
+│       ├── __init__.py                     ADAPTED -- reroutes EM imports to em_core_patched
+│       ├── utils.py                        VERBATIM
+│       ├── params.py                       VERBATIM
+│       ├── em_core.py                      VERBATIM (with upstream IndentationError; reference only)
+│       ├── em_core_patched.py              ADAPTED -- 1-char indent fix at line 202
+│       └── simulator.py                    VERBATIM
 ├── verification/
 │   └── appendix_F_verification.py          numpy-only closed-form checks
-├── audit/                                  Research-integrity harness (NEW)
+├── audit/                                  Research-integrity harness
 │   ├── README.md                           harness principle + how-to
-│   ├── claims_manifest.json                MASTER REGISTRY of paper claims
-│   ├── build_manifest.py                   regenerates the manifest
+│   ├── claims_manifest.json                paper-claims registry (Rule 1)
+│   ├── build_manifest.py                   regenerates claims_manifest.json
 │   ├── tolerances.json                     per-metric tolerance rules
 │   ├── extract_claims.py                   scan .tex for numerical tokens
 │   ├── lookup_outputs.py                   resolve manifest -> code value
 │   ├── compare.py                          diff paper vs code
 │   ├── report.py                           markdown report (REPORT.md)
 │   ├── regenerate_table1.py                rebuild Table 1 LaTeX from CSV
-│   ├── run.sh                              one-shot: pipeline + audit + report
-│   ├── REPORT.md                           latest report (regenerated on every run)
+│   ├── code_provenance_manifest.json       vendored-code registry (Rule 2)
+│   ├── check_provenance.py                 verify upstream-vs-local hashes + license + originality
+│   ├── run.sh                              one-shot: pipeline + claims audit + provenance audit
+│   ├── REPORT.md                           latest claims report (regenerated)
+│   ├── PROVENANCE_REPORT.md                latest provenance report (regenerated)
 │   ├── _extracted_numbers.json             gitignored intermediate
-│   └── _diff.json                          gitignored intermediate
+│   ├── _diff.json                          gitignored intermediate
+│   └── _provenance_diff.json               gitignored intermediate
 ├── data/
 │   ├── fund_metadata.csv                   20 rows: 19 bond + SPY, with characteristics
 │   ├── raw/                                pipeline outputs (gitignored)
@@ -114,20 +127,24 @@ friday-clustering-bond-etfs/
 ├── README.md                               user-facing replication readme
 ├── requirements.txt                        pip dependencies
 ├── environment.yml                         conda environment (incl. R + MSGARCH)
-├── LICENSE                                 MIT
-├── .gitignore                              ignores pipeline outputs
+├── LICENSE                                 MIT (this repository's own license)
+├── THIRD_PARTY_LICENSES.md                 attribution for all vendored third-party code
+├── .gitignore                              ignores pipeline outputs and audit intermediates
 └── HANDOFF.md                              THIS FILE
 ```
 
 ---
 
-## 3. The research-integrity principle (one rule)
+## 3. The research-integrity principles (two rules)
+
+### Rule 1 — Every paper number traces to code+data
 
 > **Every numerical claim in `paper/frl_paper.tex` must be reproducible from
 > `code/` + `data/`, or it must be explicitly registered as `illustrative` /
 > `deferred` in `audit/claims_manifest.json`.**
 
-This rule is enforced by the audit harness.  Three failure modes the harness
+This rule is enforced by `audit/extract_claims.py` + `audit/compare.py` +
+`audit/report.py` -> `audit/REPORT.md`.  Three failure modes the harness
 catches:
 
 1. **Hardcoded value in paper that has no code source.** YELLOW in the
@@ -150,6 +167,47 @@ The harness does NOT:
   `verification/appendix_F_verification.py` for the closed-form sanity checks.
 - Detect tautological computations.  If a manifest entry's `expr` is `0` and
   the paper claims `0`, that's GREEN but useless.
+
+### Rule 2 — Every line of code traces to its author
+
+> **Code that is not original to this repository must live in a clearly-
+> demarcated vendored directory, with the upstream LICENSE preserved
+> verbatim and the divergence (if any) explicitly documented in
+> `audit/code_provenance_manifest.json`.  Consumer files in `code/` must
+> import from vendored modules — never redefine third-party algorithm
+> code inline.**
+
+This rule is enforced by `audit/check_provenance.py` ->
+`audit/PROVENANCE_REPORT.md`.  Three failure modes the harness catches:
+
+1. **Verbatim drift.** A file declared `policy: verbatim` no longer
+   matches the upstream raw at the pinned commit.  Reported as `DIVERGENT`.
+   Fix: either run `python audit/check_provenance.py --refresh-verbatim`
+   (which overwrites local with upstream) or update the pinned commit.
+2. **Undocumented adaptation.** A vendored file diverges from upstream
+   but the manifest entry lacks a `divergence_reason` /
+   `patch_description`.  Reported as `ADAPTED_UNDOCUMENTED`.  Fix:
+   document the patch in the manifest and (typically) in a docstring
+   header on the divergent file.
+3. **Inline plagiarism.** A consumer file in `code/` redefines an
+   upstream algorithm symbol (e.g., `def forward_backward_EM(...)`)
+   instead of importing from the vendored package.  Reported as
+   `PLAGIARISM_RISK`.  Fix: delete the inline definition and import from
+   the vendored module.
+
+The manifest schema supports three file policies:
+
+| Policy | Meaning | Audit check |
+|---|---|---|
+| `verbatim` | byte-for-byte copy of upstream | hash equality vs raw upstream URL |
+| `adapted_for_bugfix` | minimal patch to fix upstream bug, kept verbatim otherwise | manifest must declare `divergence_reason` + `patch_description`; harness verifies presence |
+| (consumer files in `originality_check.consumer_files`) | files in `code/` that USE the vendored package | harness scans for forbidden inline `def`/`class` definitions of upstream symbols |
+
+Currently vendored: **`code/_vendored_msgarch_lee2025/`** — Lee (2025)
+day-dependent MSGARCH, MIT licensed; pinned commit
+`c84bc297d11e430cd459a20919fee1a425e1dd41`.  See
+`THIRD_PARTY_LICENSES.md` and that directory's `LICENSE` /
+`PROVENANCE.md` for the full attribution chain.
 
 ---
 
@@ -230,10 +288,35 @@ Then `python audit/build_manifest.py && bash audit/run.sh`.
 
 ## 5. Audit cycles run so far
 
+### 5a. Paper-vs-code claims audit (`REPORT.md`)
+
 | Cycle | Date | Trigger | RED | YELLOW | GREEN | GRAY | Total |
 |---|---|---|---:|---:|---:|---:|---:|
 | 1 | 2026-05-11 | initial run after harness build | 53 | 6 | 13 | 13 | 85 |
 | 2 | 2026-05-11 | after honest revision of `paper/frl_paper.tex` and manifest re-sync | **0** | **0** | **80** | 2 | 82 |
+
+### 5b. Code-provenance audit (`PROVENANCE_REPORT.md`)
+
+| Cycle | Date | Trigger | VERBATIM | DIVERGENT | ADAPTED_DOCUMENTED | ADAPTED_UNDOCUMENTED | LICENSE_OK | PLAGIARISM_RISK |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| 1 | 2026-05-13 | initial harness build; vendor copies hand-written | 1 | 5 | 0 | 0 | 3 | 0 |
+| 2 | 2026-05-13 | after `--refresh-verbatim`; exposed upstream `em_core.py` IndentationError | 6 | 0 | 0 | 0 | 3 | 0 |
+| 3 | 2026-05-13 | after adding `em_core_patched.py` + manifest `adapted_for_bugfix` policy | **5** | **0** | **2** | **0** | **3** | **0** |
+
+Notes on cycle 2 → 3:
+
+- The audit harness, when run with `--refresh-verbatim`, brought our local
+  vendor copies into byte-for-byte agreement with upstream.  This exposed
+  an IndentationError in upstream `em_core.py` that had been silently
+  "fixed" in our earlier hand-written copies (or in the original
+  WebFetch's rendering).  In other words, the integrity loop forced us
+  to confront an upstream bug we had been hiding.
+- The fix preserves `em_core.py` verbatim (faithful to upstream's
+  published state) and adds `em_core_patched.py` with a 1-character
+  whitespace fix, documented in the manifest with explicit
+  `divergence_reason` / `patch_description` fields.
+- `__init__.py` is similarly marked `adapted_for_bugfix` because it
+  re-routes EM imports to the patched module.
 
 The 6 YELLOW in cycle 1 were AGGH and IS04 (delisted on yfinance); they were
 removed from Table 1 in the revision.  Sample size in the paper is now stated
@@ -276,12 +359,15 @@ When you fix any of these, the audit's GRAY rows can be promoted to HARD
 | Goal | Command |
 |---|---|
 | Install deps | `py -3.12 -m pip install -r requirements.txt` |
-| Pipeline + audit one-shot | `bash audit/run.sh` |
+| Pipeline + claims audit + provenance audit | `bash audit/run.sh` |
 | Audit only (skip pipeline) | `SKIP_PIPELINE=1 bash audit/run.sh` |
+| Provenance audit only | `py -3.12 audit/check_provenance.py` |
+| Provenance audit offline (no network) | `OFFLINE_PROVENANCE=1 bash audit/run.sh` |
+| Re-sync vendored files to upstream | `py -3.12 audit/check_provenance.py --refresh-verbatim` |
 | Just pipeline (no audit) | `for f in code/0*.py; do py -3.12 "$f"; done; py -3.12 code/10_audit_inputs.py` |
 | Just verification | `py -3.12 verification/appendix_F_verification.py` |
 | Regenerate Table 1 LaTeX | `py -3.12 audit/regenerate_table1.py` |
-| Rebuild manifest after editing build_manifest.py | `py -3.12 audit/build_manifest.py` |
+| Rebuild claims manifest | `py -3.12 audit/build_manifest.py` |
 | Look up one claim | `py -3.12 audit/lookup_outputs.py tab1_IEF_fri_pct` |
 
 On macOS/Linux substitute `py -3.12` with `python3.12` or `python3`.
@@ -303,13 +389,27 @@ ls output/
 #           figures/  flow_proxy.csv  fridayshift.csv  hcug_results.csv
 #           spearman_predictors.json  subperiod_friday_share.csv  wsas_results.csv
 
-# 3. Audit clean
-bash audit/run.sh 2>&1 | tail -5
+# 3. Both audits clean
+bash audit/run.sh 2>&1 | tail -10
+# expected: "[provenance] file:0 bad / license:0 bad / originality:0 bad"
 # expected: "{'GREEN': N, 'RED': 0, 'YELLOW': 0, 'GRAY': K, 'total': N+K}"
 
-# 4. Latest report shows clean
+# 4a. Paper-vs-code report shows clean
 head -15 audit/REPORT.md
 # expected: "🔴 **RED**:      0  ...  ✅ **Clean audit**"
+
+# 4b. Code-provenance report shows clean
+head -15 audit/PROVENANCE_REPORT.md
+# expected: "✅ **Clean provenance** — all vendored files match upstream,
+#           all licenses retained, no inline plagiarism."
+
+# 5. Functional smoke-test of the patched vendored EM (catches indent bugs etc.)
+py -3.12 -c "import sys; sys.path.insert(0, 'code'); import _vendored_msgarch_lee2025 as m; \
+  import numpy as np; np.random.seed(0); r = np.random.standard_normal(200) * 0.5; \
+  d = np.tile([0,1,2,3,4], 40); \
+  par = m.em_fit_ms_garch(r, d, m.utils.compute_lam_scad(r), K=2, max_iter=2); \
+  print('vendored EM OK')"
+# expected: "vendored EM OK"
 ```
 
 If any of these fail, you are not ready to submit.
@@ -363,6 +463,9 @@ This anchors the new session to the audit invariant before any work begins.
 | Use `kind: "illustrative"` to hide a real result | `illustrative` is reserved for genuinely decorative numbers (font sizes, page numbers, dates).  Real results that are too weak should be honestly reported, not relabeled. |
 | Hardcode a Friday share / G-stat / rho into the paper or into `09_make_figures.py` | All such numbers come from the pipeline output CSVs.  `09_make_figures.py` reads `output/hcug_results.csv`, not a hardcoded list. |
 | Add a `np.random.seed(...)` call inside the audit harness or paper-prose-generation step | Random seeds belong only in `code/04`, `code/06`, `code/07`, and the verification script.  Seeded synthetic data must never reach the paper. |
+| Paste third-party algorithm code into `code/06_*.py` (or any `code/0*.py`) inline | Vendor it into `code/_vendored_<name>/` with the upstream LICENSE alongside, register in `audit/code_provenance_manifest.json`, and IMPORT from there. |
+| Rename vendored functions to make them look local (e.g. `scad_clip` → `_scad_clip`) | Keep upstream names verbatim.  Renaming obscures attribution. |
+| "Fix" an upstream bug by editing the verbatim copy in place | Add a separately-named `<name>_patched.py`, document the diff in its docstring AND in the manifest with `policy: adapted_for_bugfix`, retain the verbatim file untouched. |
 
 ---
 
@@ -370,7 +473,8 @@ This anchors the new session to the audit invariant before any work begins.
 
 | Version | Date | Author | Change |
 |---|---|---|---|
-| 1.0 | 2026-05-11 | initial draft after audit cycle 2 cleaned | Establishes the harness, principles, and workflow. |
+| 1.0 | 2026-05-11 | initial draft after audit cycle 2 cleaned | Establishes Rule 1 (paper-vs-code) and the workflow. |
+| 1.1 | 2026-05-13 | added code-provenance harness | Establishes Rule 2 (vendored-code provenance + license + originality).  Adds `audit/check_provenance.py`, `code_provenance_manifest.json`, `code/_vendored_msgarch_lee2025/`, `THIRD_PARTY_LICENSES.md`.  Exposes and patches an upstream IndentationError in Lee (2025) `em_core.py` with documented `adapted_for_bugfix` policy. |
 
 ---
 

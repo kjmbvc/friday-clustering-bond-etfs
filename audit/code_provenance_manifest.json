@@ -1,0 +1,81 @@
+{
+  "schema_version": "1.0",
+  "_README": "Master registry of vendored / third-party code in this repository. Each entry pins one vendored file to an upstream URL and (optionally) an expected SHA-256.  audit/check_provenance.py walks this list, fetches the upstream content, and reports any divergence.  See HANDOFF.md section on code provenance.",
+  "packages": [
+    {
+      "id": "msgarch_lee2025",
+      "title": "Day-dependent MSGARCH model (Lee 2025)",
+      "upstream_repo": "https://github.com/Im-Hyeon-Lee/Day-dependent-Markov-switching-GARCH-model",
+      "upstream_raw_base": "https://raw.githubusercontent.com/Im-Hyeon-Lee/Day-dependent-Markov-switching-GARCH-model",
+      "pinned_commit": "c84bc297d11e430cd459a20919fee1a425e1dd41",
+      "license": "MIT",
+      "license_holder": "Im Hyeon Lee",
+      "license_year": 2025,
+      "vendor_dir": "code/_vendored_msgarch_lee2025",
+      "vendoring_policy": "verbatim",
+      "files": [
+        {
+          "local": "code/_vendored_msgarch_lee2025/__init__.py",
+          "upstream_path": "src/__init__.py",
+          "policy": "adapted_for_bugfix",
+          "divergence_reason": "Reroutes EM imports to em_core_patched.py because upstream em_core.py has IndentationError at line 202",
+          "patch_description": "Replaced `from .em_core import ...` with `from .em_core_patched import ...`"
+        },
+        {
+          "local": "code/_vendored_msgarch_lee2025/utils.py",
+          "upstream_path": "src/utils.py",
+          "policy": "verbatim"
+        },
+        {
+          "local": "code/_vendored_msgarch_lee2025/params.py",
+          "upstream_path": "src/params.py",
+          "policy": "verbatim"
+        },
+        {
+          "local": "code/_vendored_msgarch_lee2025/em_core.py",
+          "upstream_path": "src/em_core.py",
+          "policy": "verbatim",
+          "_note": "Preserved verbatim including upstream IndentationError at line 202. Not imported; reference only. See em_core_patched.py for the usable version."
+        },
+        {
+          "local": "code/_vendored_msgarch_lee2025/em_core_patched.py",
+          "upstream_path": "src/em_core.py",
+          "policy": "adapted_for_bugfix",
+          "divergence_reason": "Fixes 1-character indentation typo at line 202 of em_fit_ms_garch that breaks Python parsing",
+          "patch_description": "Line 202: changed `     for it in range(max_iter):` (5 spaces) to `    for it in range(max_iter):` (4 spaces). All other lines verbatim from upstream; docstring header prepended describing the divergence.",
+          "divergence_bytes_estimate": 1
+        },
+        {
+          "local": "code/_vendored_msgarch_lee2025/simulator.py",
+          "upstream_path": "src/simulator.py",
+          "policy": "verbatim"
+        },
+        {
+          "local": "code/_vendored_msgarch_lee2025/LICENSE",
+          "upstream_path": "LICENSE",
+          "policy": "verbatim"
+        }
+      ],
+      "license_artifacts": [
+        "code/_vendored_msgarch_lee2025/LICENSE",
+        "code/_vendored_msgarch_lee2025/PROVENANCE.md",
+        "THIRD_PARTY_LICENSES.md"
+      ],
+      "originality_check": {
+        "_doc": "Files in our code/ that USE this package.  Each must import from the vendor dir, NOT reproduce algorithm code inline.  audit/check_provenance.py greps for forbidden symbols.",
+        "consumer_files": [
+          "code/06_msgarch_via_rpy2.py"
+        ],
+        "forbidden_inline_symbols": [
+          "def scad_clip",
+          "def forward_backward_EM",
+          "def em_fit_ms_garch",
+          "def M_step",
+          "class MSGARCHParams",
+          "def initialize_parameters"
+        ],
+        "_doc_forbidden": "These symbol definitions must NOT appear in consumer_files (they live only in the vendored package).  Consumer files may import these names."
+      }
+    }
+  ]
+}
