@@ -543,10 +543,26 @@ T+1-adopting markets.  With only $n = 2$ UCITS control funds (AGGH and IS04 are
 unavailable in yfinance) the Welch DiD has very low power; none of the four
 treatment-group DiDs reach $p < 0.20$.  We therefore report the
 event-study as descriptive: T+1 does not generate a detectable
-differential Friday concentration in this sample.  A causal claim would
-require (a)~a larger UCITS control panel via direct issuer-page NAV
-downloads or (b)~a synthetic-control construction using non-bond
-benchmarks; both are outlined in Appendix~E.5.
+differential Friday concentration in this sample.
+
+The DiD null result is \emph{not in tension} with the cross-sectional
+Treasury association in \S\,\ref{sec:cs} ($\rho = +0.50$,
+$p = 0.04$): \S\,\ref{sec:cs} ranks 17 funds on long-run
+$\FridayShift$ (a log-variance ratio computed over 2002--2026), while
+\S\,\ref{sec:t1_did} compares the proportion of Friday-max weeks
+across non-overlapping 12-month windows.  The two estimators target
+related but distinct objects, and a strong cross-section under one
+measure does not predict a detectable event-study under the other.
+Inspection of the per-group means also shows that the U.S.\ Treasury
+group's pre-window Friday share ($22.4\%$) is unusually low relative
+to its long-run mean ($\approx 26\%$, Table~\ref{tab:fridayshare}), so
+its $+3.85$~pp post-event shift largely reflects mean-reversion to the
+long-run rather than a treatment effect.
+
+A causal claim would require (a)~a larger UCITS control panel via
+direct issuer-page NAV downloads or (b)~a synthetic-control
+construction using non-bond benchmarks; both are outlined in
+Appendix~E.5.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
