@@ -47,6 +47,10 @@ if [[ "${SKIP_PIPELINE:-0}" != "1" ]]; then
 fi
 
 echo
+echo "[run] Unit-test stage (utils/ math primitives)"
+$PY -m pytest tests/ -q 2>&1 | tail -8
+
+echo
 echo "[run] Verification stage"
 $PY verification/appendix_F_verification.py 2>&1 | tail -3
 

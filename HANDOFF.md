@@ -294,6 +294,8 @@ Then `python audit/build_manifest.py && bash audit/run.sh`.
 |---|---|---|---:|---:|---:|---:|---:|
 | 1 | 2026-05-11 | initial run after harness build | 53 | 6 | 13 | 13 | 85 |
 | 2 | 2026-05-11 | after honest revision of `paper/frl_paper.tex` and manifest re-sync | **0** | **0** | **80** | 2 | 82 |
+| 3 | 2026-05-13 | initial cycle after v2 codebase merge (paper text still on EM-based rhos but pipeline now produces nonparam-based rhos) | 6 | 0 | 74 | 2 | 82 |
+| 4 | 2026-05-13 | after manifest + paper §5.3/abstract re-sync to nonparam Spearman rhos; pytest 15/15 PASS; verification 17/17 PASS | **0** | **0** | **80** | 2 | 82 |
 
 ### 5b. Code-provenance audit (`PROVENANCE_REPORT.md`)
 
@@ -302,6 +304,7 @@ Then `python audit/build_manifest.py && bash audit/run.sh`.
 | 1 | 2026-05-13 | initial harness build; vendor copies hand-written | 1 | 5 | 0 | 0 | 3 | 0 |
 | 2 | 2026-05-13 | after `--refresh-verbatim`; exposed upstream `em_core.py` IndentationError | 6 | 0 | 0 | 0 | 3 | 0 |
 | 3 | 2026-05-13 | after adding `em_core_patched.py` + manifest `adapted_for_bugfix` policy | **5** | **0** | **2** | **0** | **3** | **0** |
+| 4 | 2026-05-13 | after v2 codebase merge; vendored package and consumer-file integrity unchanged by the refactor | **5** | **0** | **2** | **0** | **3** | **0** |
 
 Notes on cycle 2 → 3:
 
@@ -475,6 +478,7 @@ This anchors the new session to the audit invariant before any work begins.
 |---|---|---|---|
 | 1.0 | 2026-05-11 | initial draft after audit cycle 2 cleaned | Establishes Rule 1 (paper-vs-code) and the workflow. |
 | 1.1 | 2026-05-13 | added code-provenance harness | Establishes Rule 2 (vendored-code provenance + license + originality).  Adds `audit/check_provenance.py`, `code_provenance_manifest.json`, `code/_vendored_msgarch_lee2025/`, `THIRD_PARTY_LICENSES.md`.  Exposes and patches an upstream IndentationError in Lee (2025) `em_core.py` with documented `adapted_for_bugfix` policy. |
+| 1.2 | 2026-05-13 | merged v2 codebase structure | Adopts the cleaner `constants.py` + `utils/` + `tests/` + `pyproject.toml` + `Makefile` layout from `friday_clustering_replication_v2.zip`.  Math primitives now live in `utils/` (one module per Appendix-F equation block) and are unit-tested by pytest.  `docs/MATH_TO_CODE_MAP.md` is the explicit paper→code map.  `code/06_msgarch_via_rpy2.py` is rewritten as a 3-backend hybrid (rpy2 → vendored Lee EM → numpy non-parametric).  `audit/run.sh` extended to call pytest before the rest of the audit cycle. |
 
 ---
 

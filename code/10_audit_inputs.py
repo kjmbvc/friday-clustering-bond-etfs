@@ -95,42 +95,36 @@ def spearman(x: np.ndarray, y: np.ndarray) -> tuple[float, float, int]:
 
 
 def build_spearman() -> dict:
-    if not (FS.exists() and META.exists()):
-        sys.exit(f"missing {FS} or {META} — run pipeline first")
-    fs = pd.read_csv(FS)
-    meta = pd.read_csv(META)
-    df = meta.merge(fs[["ticker", "fridayshift"]], on="ticker", how="inner")
-    df = df.loc[df["ticker"] != "SPY"].copy()
+    """Reshape code/07's spearman_results.csv into a JSON keyed by predictor.
 
-    df["log_aum"]    = np.log(df["aum_usd_bn_2025"])
-    df["treasury"]   = df["benchmark"].str.contains("Treasury|Govt", case=False, regex=True).astype(int)
-    df["log_advaum"] = np.log(df["adv_usd_m"] / (df["aum_usd_bn_2025"] * 1000))
-    df["bid_ask"]    = df["bid_ask_bp"]
-    df["expense"]    = df["expense_ratio_bp"]
-    # iNAV inacc - read per-ticker from raw if present
-    inacc = []
-    for t in df["ticker"]:
-        path = REPO / "data" / "raw" / f"{t}_inav.csv"
-        if path.exists():
-            try:
-                ii = pd.read_csv(path)
-                inacc.append(np.nan if len(ii) == 0 else float(ii["inav"].std() / ii["inav"].mean() * 100))
-            except Exception:
-                inacc.append(np.nan)
-        else:
-            inacc.append(np.nan)
-    df["inav_inacc"] = inacc
-
-    y = df["fridayshift"].to_numpy(dtype=float)
-    out = {}
-    for col, label in [("log_aum", "log_aum"), ("treasury", "treasury"),
-                        ("log_advaum", "log_advaum"), ("bid_ask", "bid_ask"),
-                        ("expense", "expense"), ("inav_inacc", "inav_inacc")]:
-        x = df[col].to_numpy(dtype=float)
-        r, p, n = spearman(x, y)
-        out[label] = {"rho": round(r, 4) if not math.isnan(r) else None,
-                       "p_value": round(p, 4) if not math.isnan(p) else None,
-                       "n": n}
+    Single source of truth: the Spearman rho/p/n values are computed in
+    `code/07_cross_sectional_ols.py` using `utils.spearman.spearman_with_t`.
+    This script does not recompute them, only reshapes for manifest lookup.
+    """
+    src = REPO / "output" / "spearman_results.csv"
+    if not src.exists():
+        sys.exit(f"missing {src} -- run code/07 first")
+    sp = pd.read_csv(src)
+    # code/07's predictor names are CamelCase (log_AUM, log_ADV_AUM).
+    # We expose lowercased keys for stable JSON references.
+    rename = {"log_AUM": "log_aum", "log_ADV_AUM": "log_advaum",
+              "treasury": "treasury", "duration": "duration",
+              "bid_ask": "bid_ask", "expense": "expense"}
+    out: dict = {}
+    for _, row in sp.iterrows():
+        pred = str(row["predictor"])
+        key  = rename.get(pred, pred)
+        rho  = float(row["rho"])
+        p    = float(row["p"]) if "p" in row.index else float("nan")
+        n    = int(row["n"])   if "n" in row.index else 0
+        out[key] = {
+            "rho":     round(rho, 4),
+            "p_value": round(p,   4) if not math.isnan(p) else None,
+            "n":       n,
+        }
+    # iNAV inaccuracy is not in code/07's predictor set; keep as null for
+    # downstream callers (paper manifests reference it as DEFERRED).
+    out.setdefault("inav_inacc", {"rho": None, "p_value": None, "n": 0})
     return out
 
 
@@ -206,7 +200,7 @@ def build_subperiod() -> pd.DataFrame:
         fri_shares = []
         for t in us_bond_tickers:
             sub = df.loc[df["ticker"] == t]
-            wk_max = sub.loc[sub.groupby("week")["premium_pct"].idxmax()]
+            wk_max = sub.loc[sub.groupby("week")["prem"].idxmax()]
             if len(wk_max) < 20:
                 continue
             fri_shares.append((wk_max["weekday"] == 4).mean() * 100)

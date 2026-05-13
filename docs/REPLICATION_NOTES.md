@@ -1,55 +1,53 @@
 # Replication notes
 
-This document walks through every script in `code/` and what to expect.
-
 ## Order of execution
-The numbered prefix (01, 02, ..., 09) gives the required order;
-scripts depend only on the output of earlier-numbered scripts.
+The numbered prefix (01..09) gives the required order; each script
+depends only on the output of earlier-numbered scripts.
 
-## 01_fetch_nav_prices.py
-Downloads daily NAV and unadjusted closing prices for the 19 funds
-plus SPY benchmark via `yfinance` and issuer fund pages.
-Output: `data/raw/<ticker>_nav.csv`, `data/raw/<ticker>_close.csv`.
+## 01_fetch_nav_prices.py  (~ 5 min, network-bound)
+yfinance + issuer fund pages -> `data/raw/<ticker>_close.csv` and `_nav.csv`.
+The shipped script uses a placeholder for NAV (NAV = close); replace
+the `fetch_nav_placeholder` function with real issuer-page scraping
+for production use.
 
-## 02_fetch_inav_factsheets.py
-Daily iNAV for the 2018-2026 sub-sample from issuer factsheet PDFs.
-Output: `data/raw/<ticker>_inav.csv`.
+## 02_fetch_inav_factsheets.py  (~ 2 min, network-bound)
+Daily iNAV from issuer factsheets (2018-2026 sub-sample).
+Shipped stub generates a synthetic iNAV.
 
-## 03_compute_premium.py
-Computes Prem(i,t) = (Close - NAV) / NAV * 100 per fund per day.
+## 03_compute_premium.py  (< 1 min)
+Eq. (1): Prem(i, t) = (Close - NAV) / NAV * 100.
 Output: `data/processed/premiums.csv`.
 
-## 04_hcug_test.py
-Holiday-Conditioned Uniform G-test (HCUG, §4.2 of paper).
-10,000-replication permutation; BH-FDR at q < 0.05.
-Output: `output/hcug_results.csv` (Table 1 of paper).
+## 04_hcug_test.py  (~ 5 min, permutation-bound)
+Eq. (2)-(3) HCUG + (F.5) BH-FDR.  Output: `output/hcug_results.csv`.
+Re-implements Table 1 of the paper.
 
-## 05_wsas_asymmetry.py
-Wrapper-Specificity Asymmetry Statistic (WSAS, §4.3).
+## 05_wsas_asymmetry.py  (< 1 min)
+Eq. (4) WSAS + paired-Bernoulli inference + Wilcoxon signed-rank.
 Output: `output/wsas_results.csv`.
 
-## 06_msgarch_via_rpy2.py
-Day-dependent MSGARCH via R MSGARCH 2.5 package.
-Slowest script (~ 30 min). Output: `output/fridayshift.csv`.
+## 06_msgarch_via_rpy2.py  (~ 30 min, R-bound)
+Eq. (F.17)-(F.18) day-dependent MSGARCH via R MSGARCH 2.5 (rpy2).
+Falls back to non-parametric Friday-excess-share when rpy2/MSGARCH
+are missing (rho = 0.94 to true FridayShift, per Appendix B.5).
+Output: `output/fridayshift.csv`.
 
-## 07_cross_sectional_ols.py
-Multivariate OLS + HC3 + ridge + fractional logit + LOFO + permutation
-importance. Output: `output/cross_sectional.csv`.
+## 07_cross_sectional_ols.py  (~ 2 min)
+Eq. (F.6)-(F.7) OLS + HC3, (F.9) VIF, (F.10) Cook's D, (F.7') Wald F,
+(F.11) ridge LOO-CV, (F.16) permutation importance.
+Output: `output/{ols, spearman, permutation_importance}.csv`.
 
-## 08_shares_outstanding_flow.py
-Daily creation/redemption proxy (12 U.S. funds).
+## 08_shares_outstanding_flow.py  (< 1 min when shares-outstanding CSVs are present)
+Eq. (F.21) creation/redemption proxy.
 Output: `output/flow_proxy.csv`.
 
-## 09_make_figures.py
-Regenerates figA1, figB2, figC1, figC2 PNGs from the output CSVs.
+## 09_make_figures.py  (< 1 min)
+Regenerates figA1, figB2, figC1, figC2 PNGs.
 Output: `output/figures/`.
 
-## verification/appendix_F_verification.py
-NumPy-only closed-form verification of every numerical result.
+## verification/appendix_F_verification.py  (< 5 sec)
+NumPy-only closed-form check of every formula above.
 Last printed line should be `ALL CHECKS PASS`.
 
-## Random seeds
-Hard-coded in each script:
-- Permutation: 20260101
-- MSGARCH start: 20260102
-- Ridge LOO-CV: 20260103
+## tests/  (~ 2 min via `make test`)
+pytest unit tests with assertions for every math primitive.

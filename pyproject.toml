@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "friday-clustering-bond-etfs"
+version = "1.0.0"
+description = "Replication code for Kim (2026), FRL submission."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Jimin Kim", email = "kjmbvc77@uos.ac.kr"}]
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "W", "I", "N", "UP"]
+ignore = ["E501"]   # we relax line length in scientific code with long expressions
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-q --tb=short"

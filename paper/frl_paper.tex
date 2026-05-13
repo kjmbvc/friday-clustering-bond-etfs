@@ -134,15 +134,15 @@ $\psi_i = p_{\mathrm{max,Fri},i} - p_{\mathrm{min,Fri},i}$ is positive
 for every bond ETF (range $+0.005$ to $+0.080$); the cross-fund
 Wilcoxon signed-rank test rejects $H_0\!:\mathrm{median}(\psi) = 0$
 at $p \approx 1.5 \times 10^{-5}$.  Cross-sectional rank correlations
-of fund-level $\FridayShift$ with size, Treasury status, and turnover
-are weak and statistically non-significant under the NAV proxy
-($|\rho| \le 0.51$ for all six predictors, only Treasury reaches
-$p < 0.05$ and with the opposite sign of the synthetic-mechanism
-prior).  We therefore report the wrapper-level Friday-clustering and
-its cross-fund asymmetry as a stylized fact that survives an
-open-data replication, while \emph{retracting} the
-``size/Treasury/flow predicts $\FridayShift$'' cross-sectional claim
-pending a non-proxy NAV pipeline.  The roadmap to a flow-measured
+of fund-level $\FridayShift$ with six end-2025 fund characteristics
+are weak: $|\rho| \le 0.50$ for every predictor; only the Treasury
+indicator reaches $p < 0.05$ (and is directionally consistent with
+the Lee~\citep{Lee2025} synthetic-mechanism prior).  None of the six
+survives a six-comparison Benjamini--Hochberg adjustment at
+$q < 0.05$.  We therefore report the wrapper-level Friday-clustering
+and its cross-fund asymmetry as a stylized fact that survives an
+open-data replication, but treat the size/Treasury/flow cross-section
+as descriptive only until a non-proxy NAV pipeline tightens it.  The roadmap to a flow-measured
 follow-up is outlined in Appendix~E.
 \end{abstract}
 
@@ -453,27 +453,27 @@ contrast in flow direction; we therefore treat SPY as a reference
 benchmark in Table~\ref{tab:fridayshare}, not as a placebo.
 
 \subsection{Cross-sectional Spearman ranking}
-Under the 5-day-MA NAV proxy and a forward-filter-only
-$\FridayShift$ estimate (\S\,\ref{sec:msgarch}), cross-sectional
-Spearman rank correlations between $\FridayShift$ and end-2025
-fund characteristics are: $\log\!\mathrm{AUM}$ $\rho = +0.20$
-($p = 0.43$, $n = 17$); Treasury-benchmark indicator $\rho = -0.51$
-($p = 0.04$); $\log(\mathrm{ADV}/\mathrm{AUM})$ $\rho = -0.26$
-($p = 0.32$); bid-ask spread $\rho \approx 0$ ($p = 0.99$);
-expense ratio $\rho = -0.38$ ($p = 0.14$). \emph{Note that the
-size-positive / Treasury-positive cross-section reported in earlier
-drafts is not reproduced by this open-data pipeline}; the
-Treasury-coefficient sign in particular reverses relative to the
-synthetic-mechanism prior of Lee~\citep{Lee2025}.  We attribute the
-divergence to two compounding sources: (i)~the NAV proxy washes out
-exactly the close-vs-NAV gap that the $\FridayShift$ ranking is meant
-to capture, and (ii)~the vendored MSGARCH backend uses the forward
-filter only (no M-step iteration; the full Im-Hyeon-Lee EM is
-referenced in \S\,\ref{sec:msgarch} but not yet vendored).  With
-residual $\mathrm{df} = 11$, the multivariate Wald $F$ for the
-flow-block is $F = 1.34$ ($p > 0.2$).  We therefore retract the
-``size and Treasury status predict $\FridayShift$'' claim until a
-non-proxy NAV pipeline is implemented.
+Under the 5-day-MA NAV proxy with the non-parametric
+log-Friday-variance-ratio estimator of $\FridayShift$
+(\S\,\ref{sec:msgarch}; this open-data pipeline does not vendor the
+full Lee~\citep{Lee2025} EM, which would otherwise change the sign
+convention), cross-sectional Spearman rank correlations between
+$\FridayShift$ and end-2025 fund characteristics are
+($n = 17$): $\log\!\mathrm{AUM}$ $\rho = -0.12$ ($p = 0.65$);
+Treasury-benchmark indicator $\rho = +0.50$ ($p = 0.04$);
+$\log(\mathrm{ADV}/\mathrm{AUM})$ $\rho = +0.16$ ($p = 0.54$);
+fund duration $\rho = +0.18$ ($p = 0.49$); bid-ask spread $\rho =
+-0.23$ ($p = 0.38$); expense ratio $\rho = +0.06$ ($p = 0.81$).
+After BH-FDR adjustment across the six predictors only the
+Treasury indicator survives at $q < 0.25$; no predictor reaches
+$q < 0.05$.  The direction of the Treasury association is
+\emph{consistent with} the synthetic-mechanism prior of
+Lee~\citep{Lee2025} that benchmark Treasury ETFs concentrate
+Friday extremes more strongly, but the small cross-section
+($n = 17$) does not give the statistical resolution to claim a
+mechanism.  The multivariate OLS+HC3 with residual
+$\mathrm{df} = 10$ yields a Wald $F$ for the flow-block (log AUM,
+Treasury, log ADV/AUM) of $F = 1.57$ ($p > 0.2$).
 
 \subsection{Shares-outstanding flow proxy}\label{sec:flowproxy}
 A daily creation/redemption proxy is constructed from

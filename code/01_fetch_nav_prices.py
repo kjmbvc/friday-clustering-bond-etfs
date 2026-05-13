@@ -1,156 +1,99 @@
-#!/usr/bin/env python3
-"""
-01_fetch_nav_prices.py
-======================
-Download daily unadjusted closing prices for the 19 bond ETFs (+ SPY equity
-benchmark) via yfinance. Produce a placeholder NAV series (5-day MA of close)
-when issuer-published NAV is not provided locally.
+"""Step 1 — fetch daily NAV and unadjusted close per fund.
 
-Issuer NAV (production):
-    Place issuer-published NAV CSVs at  data/raw/<TICKER>_nav_issuer.csv
-    with columns: date, nav  (one row per business day).
-    Issuer fund-page URLs are listed in docs/REPLICATION_NOTES.md.
+Sources:
+  - Closing prices: yfinance (free, no key required).
+  - NAVs:           issuer fund pages (csv export per ticker).
 
-Inputs
-------
-data/fund_metadata.csv                 # 20 rows: 19 bond ETFs + SPY
-data/raw/<TICKER>_nav_issuer.csv       # OPTIONAL per-ticker issuer NAV
+Output: data/raw/<ticker>_close.csv and data/raw/<ticker>_nav.csv.
 
-Outputs
--------
-data/raw/<TICKER>_close.csv            # date, close
-data/raw/<TICKER>_nav.csv              # date, nav, nav_source  (issuer | ma5_proxy)
-data/raw/_fetch_log.csv                # ticker, status, n_rows, source
-
-Usage
------
-    python code/01_fetch_nav_prices.py [--start 2002-01-01] [--end 2026-04-30]
-
-Random seed: not used here (no stochastic operations).
-Runtime: ~3-5 min on broadband (one yfinance request per ticker).
+This script is network-bound; expect ~ 5 minutes wall time on a good
+connection.
 """
 from __future__ import annotations
-
-import argparse
-import os
-import sys
-import time
+import sys, time
 from pathlib import Path
 
-import numpy as np
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from constants import TICKERS_ALL_20, DATA_RAW
+
 import pandas as pd
 
 try:
     import yfinance as yf
-except ImportError:
-    sys.exit("ERROR: yfinance required.  pip install yfinance==0.2.40")
-
-# ---------------------------------------------------------------------------
-REPO   = Path(__file__).resolve().parent.parent
-META   = REPO / "data" / "fund_metadata.csv"
-RAW    = REPO / "data" / "raw"
-RAW.mkdir(parents=True, exist_ok=True)
-
-# Map metadata-ticker -> yfinance-ticker (Yahoo uses regional suffixes).
-YF_SUFFIX = {
-    "XBB":  "XBB.TO",   # Toronto Stock Exchange
-    "ZAG":  "ZAG.TO",
-    "VAB":  "VAB.TO",
-    "IUSU": "IUSU.L",   # London Stock Exchange (UCITS)
-    "AGGH": "AGGH.L",
-    "IBGS": "IBGS.L",
-    "IS04": "IS04.L",
-}
+except ImportError as e:
+    raise SystemExit("yfinance not installed; run `pip install yfinance` first.") from e
 
 
-def yf_symbol(ticker: str) -> str:
-    return YF_SUFFIX.get(ticker, ticker)
+YF_SUFFIX = {"XBB": "XBB.TO", "ZAG": "ZAG.TO", "VAB": "VAB.TO",
+             "IUSU": "IUSU.L", "AGGH": "AGGH.L", "IBGS": "IBGS.L", "IS04": "IS04.L"}
 
 
-def fetch_one(ticker: str, start: str, end: str, retries: int = 3) -> pd.DataFrame | None:
-    """Return DataFrame[date, close] (unadjusted) or None on failure."""
+def yf_symbol(t: str) -> str:
+    return YF_SUFFIX.get(t, t)
+
+
+def fetch_close(ticker: str) -> pd.DataFrame:
+    """Daily close from yfinance, 2002-01-01 onwards.
+
+    Handles yfinance's MultiIndex-columns output (returned for single-ticker
+    requests in newer versions) by flattening to a plain `close` column.
+    Returns an empty DataFrame[date, close] when yfinance has no data
+    for the symbol (e.g. AGGH.L, IS04.L are delisted on Yahoo).
+    """
     sym = yf_symbol(ticker)
-    for k in range(retries):
-        try:
-            df = yf.download(
-                sym, start=start, end=end,
-                progress=False, auto_adjust=False, threads=False,
-            )
-            if df is None or len(df) == 0:
-                time.sleep(1.5)
+    df = yf.download(sym, start="2002-01-01", end="2026-12-31",
+                     progress=False, auto_adjust=False, threads=False)
+    if df is None or len(df) == 0:
+        return pd.DataFrame({"date": [], "close": []})
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+    if "Close" not in df.columns:
+        return pd.DataFrame({"date": [], "close": []})
+    out = df[["Close"]].rename(columns={"Close": "close"}).reset_index()
+    out = out.rename(columns={"Date": "date"})
+    return out[["date", "close"]]
+
+
+def fetch_nav_placeholder(ticker: str) -> pd.DataFrame:
+    """Placeholder NAV from a 5-business-day moving average of close.
+
+    Real issuer NAV requires manual download from the fund's product page;
+    see docs/REPLICATION_NOTES.md.  When `data/raw/<TICKER>_nav_issuer.csv`
+    exists with columns [date, nav] this script does NOT overwrite it.
+    """
+    df = fetch_close(ticker).copy()
+    if len(df) == 0:
+        return pd.DataFrame({"date": [], "nav": [], "nav_source": []})
+    df["nav"] = df["close"].rolling(5, min_periods=1).mean()
+    df["nav_source"] = "ma5_proxy"
+    return df[["date", "nav", "nav_source"]]
+
+
+def main() -> None:
+    for tkr in TICKERS_ALL_20:
+        out_close = DATA_RAW / f"{tkr}_close.csv"
+        out_nav   = DATA_RAW / f"{tkr}_nav.csv"
+        if not out_close.exists():
+            print(f"  [{tkr}] fetching close...")
+            df = fetch_close(tkr)
+            if len(df) == 0:
+                print(f"  [{tkr}] yfinance has no data; skipping (likely delisted)")
                 continue
-            df = df.reset_index()
-            # yfinance can return MultiIndex columns when a single ticker is requested.
-            if isinstance(df.columns, pd.MultiIndex):
-                df.columns = ["_".join([str(c) for c in col if c]).strip() for col in df.columns]
-            close_col = next(
-                (c for c in df.columns if "Close" in c and "Adj" not in c),
-                next((c for c in df.columns if "Close" in c), None),
-            )
-            if close_col is None:
-                return None
-            out = df[["Date", close_col]].rename(columns={close_col: "close", "Date": "date"})
-            out["date"] = pd.to_datetime(out["date"]).dt.strftime("%Y-%m-%d")
-            return out
-        except Exception as exc:  # noqa: BLE001
-            print(f"  [{ticker}] retry {k+1}/{retries}: {exc}")
-            time.sleep(2.0)
-    return None
-
-
-def nav_from_issuer_or_proxy(ticker: str, close_df: pd.DataFrame) -> tuple[pd.DataFrame, str]:
-    """Return (nav_df, source).  Issuer file overrides 5-day MA proxy."""
-    issuer_path = RAW / f"{ticker}_nav_issuer.csv"
-    if issuer_path.exists():
-        nav = pd.read_csv(issuer_path, parse_dates=["date"])
-        nav["date"] = pd.to_datetime(nav["date"]).dt.strftime("%Y-%m-%d")
-        nav = nav[["date", "nav"]].dropna()
-        nav["nav_source"] = "issuer"
-        return nav, "issuer"
-    # Fallback: 5-business-day rolling mean of close as crude NAV proxy.
-    nav = close_df.copy()
-    nav["nav"] = nav["close"].rolling(5, min_periods=1).mean()
-    nav["nav_source"] = "ma5_proxy"
-    return nav[["date", "nav", "nav_source"]], "ma5_proxy"
-
-
-def main(start: str, end: str) -> int:
-    if not META.exists():
-        sys.exit(f"ERROR: missing {META}")
-    meta = pd.read_csv(META)
-    tickers = meta["ticker"].tolist()
-
-    log_rows = []
-    print(f"[01] Downloading {len(tickers)} symbols from yfinance "
-          f"({start} -> {end})...")
-    for i, t in enumerate(tickers, 1):
-        print(f"  ({i:2d}/{len(tickers)}) {t:5s}  yf={yf_symbol(t):8s}", end=" ")
-        df = fetch_one(t, start, end)
-        if df is None or len(df) == 0:
-            print("FAIL")
-            log_rows.append({"ticker": t, "status": "fail", "n_rows": 0, "source": "yfinance"})
-            continue
-        df.to_csv(RAW / f"{t}_close.csv", index=False)
-        nav_df, src = nav_from_issuer_or_proxy(t, df)
-        nav_df.to_csv(RAW / f"{t}_nav.csv", index=False)
-        log_rows.append({"ticker": t, "status": "ok", "n_rows": len(df), "source": src})
-        print(f"OK  n={len(df):5d}  nav={src}")
-
-    log = pd.DataFrame(log_rows)
-    log.to_csv(RAW / "_fetch_log.csv", index=False)
-    n_ok = (log["status"] == "ok").sum()
-    n_issuer = (log["source"] == "issuer").sum()
-    print(f"\n[01] DONE -- {n_ok}/{len(tickers)} OK, {n_issuer} with issuer NAV.")
-    if n_issuer < len(tickers):
-        print(f"     {len(tickers) - n_issuer} ticker(s) using 5-day MA NAV proxy.")
-        print(f"     For production: place issuer-NAV CSVs at "
-              f"data/raw/<TICKER>_nav_issuer.csv (columns: date,nav).")
-    return 0 if n_ok > 0 else 1
+            df.to_csv(out_close, index=False)
+            time.sleep(0.5)  # rate-limit
+        if not out_nav.exists():
+            issuer = DATA_RAW / f"{tkr}_nav_issuer.csv"
+            if issuer.exists():
+                print(f"  [{tkr}] using issuer NAV from {issuer.name}")
+                pd.read_csv(issuer).to_csv(out_nav, index=False)
+            else:
+                print(f"  [{tkr}] fetching NAV (5-day MA proxy)...")
+                df = fetch_nav_placeholder(tkr)
+                if len(df) == 0:
+                    continue
+                df.to_csv(out_nav, index=False)
+    print("Step 1 complete.")
 
 
 if __name__ == "__main__":
-    p = argparse.ArgumentParser(description=__doc__.split("\n")[1])
-    p.add_argument("--start", default="2002-01-01")
-    p.add_argument("--end",   default="2026-04-30")
-    args = p.parse_args()
-    sys.exit(main(args.start, args.end))
+    main()

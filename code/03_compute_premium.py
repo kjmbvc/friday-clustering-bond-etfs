@@ -1,89 +1,56 @@
-#!/usr/bin/env python3
-"""
-03_compute_premium.py
-=====================
-Compute the daily NAV premium series for every fund:
+"""Step 3 — compute Prem(i, t) per fund per day (Eq. 1).
 
-    Prem(i, t) = ( Close(i, t) - NAV(i, t) ) / NAV(i, t) * 100        (basis points)
+Reads data/raw/<ticker>_{close,nav}.csv, joins on date, computes
+Prem(i, t) = (Close - NAV) / NAV * 100, writes long-format CSV to
+data/processed/premiums.csv.
 
-Inputs
-------
-data/raw/<TICKER>_close.csv       # date, close
-data/raw/<TICKER>_nav.csv         # date, nav, nav_source
-
-Output
-------
-data/processed/premiums.csv       # long format
-    columns: date, ticker, close, nav, nav_source, premium_pct
-
-Usage
------
-    python code/03_compute_premium.py
+Robust to missing tickers (delisted on yfinance: AGGH, IS04 sometimes).
 """
 from __future__ import annotations
-
 import sys
 from pathlib import Path
-
 import numpy as np
 import pandas as pd
 
-REPO = Path(__file__).resolve().parent.parent
-META = REPO / "data" / "fund_metadata.csv"
-RAW  = REPO / "data" / "raw"
-PROC = REPO / "data" / "processed"
-PROC.mkdir(parents=True, exist_ok=True)
-
-OUT = PROC / "premiums.csv"
+sys.path.insert(0, str(Path(__file__).parent.parent))
+from constants import TICKERS_ALL_20, DATA_RAW, PREMIUMS_CSV
 
 
-def load_one(ticker: str) -> pd.DataFrame | None:
-    cpath = RAW / f"{ticker}_close.csv"
-    npath = RAW / f"{ticker}_nav.csv"
+def compute_premium_per_fund(ticker: str) -> pd.DataFrame | None:
+    """Eq. (1): Prem(i, t) = (Close - NAV) / NAV * 100."""
+    cpath = DATA_RAW / f"{ticker}_close.csv"
+    npath = DATA_RAW / f"{ticker}_nav.csv"
     if not cpath.exists() or not npath.exists():
         return None
-    close = pd.read_csv(cpath)
-    nav   = pd.read_csv(npath)
+    close = pd.read_csv(cpath, parse_dates=["date"])
+    nav   = pd.read_csv(npath, parse_dates=["date"])
     df = close.merge(nav, on="date", how="inner")
-    df["date"] = pd.to_datetime(df["date"])
-    df["ticker"] = ticker
-    # Guard against zero/negative NAV (shouldn't happen but defensive)
-    valid = (df["nav"] > 0)
+    if "nav" not in df.columns or "close" not in df.columns or len(df) == 0:
+        return None
+    valid = df["nav"] > 0
     df = df.loc[valid].copy()
-    df["premium_pct"] = (df["close"] - df["nav"]) / df["nav"] * 100.0
-    # Reasonable winsorization at +/- 5% premium (extreme outliers usually data errors)
-    df.loc[df["premium_pct"].abs() > 5.0, "premium_pct"] = np.nan
-    df = df.dropna(subset=["premium_pct"])
-    if "nav_source" not in df.columns:
-        df["nav_source"] = "unknown"
-    return df[["date", "ticker", "close", "nav", "nav_source", "premium_pct"]]
+    df["prem"] = (df["close"] - df["nav"]) / df["nav"] * 100.0
+    df.loc[df["prem"].abs() > 5.0, "prem"] = np.nan
+    df = df.dropna(subset=["prem"])
+    df["ticker"] = ticker
+    return df[["date", "ticker", "prem"]]
 
 
-def main() -> int:
-    if not META.exists():
-        sys.exit(f"ERROR: missing {META} -- run 01 first.")
-    meta = pd.read_csv(META)
-    tickers = meta["ticker"].tolist()
-
-    frames = []
-    for t in tickers:
-        df = load_one(t)
-        if df is None or len(df) == 0:
-            print(f"  [{t}] no data -- skipping (run 01 first)")
+def main() -> None:
+    rows = []
+    for tkr in TICKERS_ALL_20:
+        out = compute_premium_per_fund(tkr)
+        if out is None or len(out) == 0:
+            print(f"  [{tkr}] missing close/nav -- skipping")
             continue
-        print(f"  [{t}] n={len(df):5d}  "
-              f"mean prem={df['premium_pct'].mean():+.4f}%  "
-              f"sd={df['premium_pct'].std():.4f}%")
-        frames.append(df)
-
-    if not frames:
-        sys.exit("ERROR: no per-ticker data found in data/raw/.  Run 01 first.")
-    out = pd.concat(frames, ignore_index=True).sort_values(["ticker", "date"])
-    out.to_csv(OUT, index=False)
-    print(f"\n[03] DONE -- wrote {len(out):,} rows for {out['ticker'].nunique()} "
-          f"tickers to {OUT.relative_to(REPO)}")
-    return 0
+        rows.append(out)
+        print(f"  [{tkr}] {len(out)} obs  mean prem={out['prem'].mean():+.4f}%  sd={out['prem'].std():.4f}%")
+    if not rows:
+        sys.exit("ERROR: no per-ticker data found.  Run code/01 first.")
+    PREMIUMS_CSV.parent.mkdir(parents=True, exist_ok=True)
+    pd.concat(rows).sort_values(["ticker", "date"]).to_csv(PREMIUMS_CSV, index=False)
+    print(f"Step 3 complete -> {PREMIUMS_CSV}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
