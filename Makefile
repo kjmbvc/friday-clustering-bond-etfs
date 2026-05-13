@@ -1,7 +1,7 @@
 # Makefile for FRL paper replication
 PY    := python
 PYT   := pytest -q
-SCRIPTS := $(wildcard code/0*.py)
+SCRIPTS := $(sort $(wildcard code/[0-9][0-9]_*.py))
 
 .PHONY: all verify test lint clean distclean help
 

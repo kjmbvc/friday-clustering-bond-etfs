@@ -505,14 +505,51 @@ with local Friday cannot be settled with the closing-price-only
 pipeline; this is deferred to a follow-up iteration with intraday
 data (Appendix~A.2).
 
-\subsection{T+1 transition (deferred)}
-A pre/post stratification around the 28~May 2024 U.S.\ T+1 settlement
-transition \citep{SEC2023T1,BessembinderMaxwell2024} is not computed
-in this iteration of the pipeline; the underlying $\FridayShift$
-estimate is too noisy under the 5-day-MA proxy + forward-filter EM
-to support a meaningful event-study stratification.  The full
-difference-in-differences with Canadian-ETF synthetic controls
-remains future work (Appendix~E.5).
+\subsection{T+1 transition (event-study DiD)}\label{sec:t1_did}
+The 28~May 2024 U.S.\ T+1 settlement transition
+\citep{SEC2023T1,BessembinderMaxwell2024} provides a natural
+quasi-experiment: U.S.\ and Canadian securities moved from T+2 to T+1
+on the same day, while European UCITS funds remained on T+2.  We
+compute group-mean changes in the Friday share of the weekly maximum
+premium between a 12-month pre-window
+($[2023\text{-}05\text{-}28,\,2024\text{-}05\text{-}28)$) and a
+12-month post-window ($[2024\text{-}05\text{-}29,\,2025\text{-}05\text{-}29)$),
+with European UCITS as the non-treated control.  Table~\ref{tab:didt1}
+reports the pre/post means and the DiD estimate per treatment group.
+
+\begin{table}[!h]
+\centering
+\caption{T+1 difference-in-differences (versus European UCITS control).
+$n$ is the number of funds in each group.  Per-fund Welch's two-sample
+$t$ on the pre-to-post $\Delta$ vector; $p$ is two-sided.}
+\label{tab:didt1}
+\small
+\begin{threeparttable}
+\begin{tabular}{lccrrrrrr}
+\toprule
+Group & $n$ & $n_{\mathrm{ctrl}}$ & Pre \%\!Fri & Post \%\!Fri & $\Delta_{\mathrm{treat}}$ & $\Delta_{\mathrm{ctrl}}$ & DiD (pp) & $p_{\mathrm{Welch}}$ \\
+\midrule
+U.S.\ Treasury    & 3 & 2 & 22.4 & 26.3 & $+3.85$ & $+6.74$ & $-2.89$ & $0.49$ \\
+U.S.\ Broad agg.  & 4 & 2 & 21.2 & 30.3 & $+9.14$ & $+6.74$ & $+2.40$ & $0.61$ \\
+U.S.\ Credit / HY / EM & 5 & 2 & 23.1 & 27.7 & $+4.62$ & $+6.74$ & $-2.12$ & $0.60$ \\
+Canadian          & 3 & 2 & 30.8 & 34.0 & $+3.19$ & $+6.74$ & $-3.54$ & $0.42$ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\footnotesize
+\item All four T+1-treated groups show positive raw post-event Friday-share
+shifts ($+3$ to $+9$~pp).  The European UCITS control \emph{also} shifts
+$+6.7$~pp, indicating that the post-2024 Friday concentration is not unique to
+T+1-adopting markets.  With only $n = 2$ UCITS control funds (AGGH and IS04 are
+unavailable in yfinance) the Welch DiD has very low power; none of the four
+treatment-group DiDs reach $p < 0.20$.  We therefore report the
+event-study as descriptive: T+1 does not generate a detectable
+differential Friday concentration in this sample.  A causal claim would
+require (a)~a larger UCITS control panel via direct issuer-page NAV
+downloads or (b)~a synthetic-control construction using non-bond
+benchmarks; both are outlined in Appendix~E.5.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
 
 \subsection{Robustness summary (sub-period stability)}
 Under the 5-day-MA NAV proxy, the median U.S.\ bond-ETF Friday share

@@ -1,14 +1,14 @@
 # Research-integrity audit report
 
-_Generated: 2026-05-13T20:36:17_
+_Generated: 2026-05-13T21:00:17_
 
 ## Summary
 
 - 🔴 **RED**:      0  (paper claim contradicts code output)
 - 🟡 **YELLOW**:   0  (lookup failed / manifest incomplete)
-- 🟢 **GREEN**:   84  (paper claim matches code output)
-- ⚪ **GRAY**:     2  (illustrative / deferred per manifest)
-- **Total claims audited**: 86
+- 🟢 **GREEN**:   90  (paper claim matches code output)
+- ⚪ **GRAY**:     1  (illustrative / deferred per manifest)
+- **Total claims audited**: 91
 
 ✅ **Clean audit** — all claims either match code, are explicitly illustrative, or are deferred future work.
 
@@ -100,10 +100,15 @@ _Generated: 2026-05-13T20:36:17_
 | GREEN | `s57_subperiod_2015` | deferred | 26.5000 | 26.5300 | 0.0300 | abs 1.0 | HARD | output/subperiod_friday_share.csv[subperiod=2015-2019].fri_p |
 | GREEN | `s57_subperiod_2020` | deferred | 25.8000 | 25.8300 | 0.0300 | abs 1.0 | HARD | output/subperiod_friday_share.csv[subperiod=2020-2026].fri_p |
 | GREEN | `baseline_pct` | deferred | 20.0000 | 20.0600 | 0.0600 | abs 1.5 | HARD | output/aggregate_stats.json:baseline_E_fri_pct |
+| GREEN | `s56_t1_did_treasury` | deferred | -2.8900 | -2.8900 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:did_vs_ucits/US_Treasury/did |
+| GREEN | `s56_t1_did_broadagg` | deferred | 2.4000 | 2.4000 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:did_vs_ucits/US_BroadAgg/did |
+| GREEN | `s56_t1_did_credit` | deferred | -2.1200 | -2.1200 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:did_vs_ucits/US_Credit/did |
+| GREEN | `s56_t1_did_canadian` | deferred | -3.5400 | -3.5400 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:did_vs_ucits/Canadian/did |
+| GREEN | `s56_t1_ucits_delta` | deferred | 6.7400 | 6.7400 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:groups/European_UCITS/delta_mean |
+| GREEN | `s56_t1_treasury_post` | deferred | 26.3000 | 26.2800 | 0.0200 | abs 1.5 | HARD | output/did_t1_summary.json:groups/US_Treasury/post_mean |
 
 ## ⚪ GRAY — illustrative / deferred (audit skipped)
 
 | Status | id | section | paper | code | Δabs | tol | severity | source |
 |---|---|---|---:|---:|---:|---|---|---|
 | GRAY | `s54_flow_rho_paper` | deferred | — | — | — | — | DEFERRED | Paper draft now states this is deferred; manifest tracks for |
-| GRAY | `s56_t1_pre` | deferred | — | — | — | — | DEFERRED | Requires non-proxy NAV to be meaningful. |

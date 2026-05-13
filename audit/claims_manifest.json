@@ -1206,15 +1206,76 @@
           "_note": "Paper draft now states this is deferred; manifest tracks for completeness."
         },
         {
-          "id": "s56_t1_pre",
-          "tex_section": "5.6 T+1",
-          "claim_text": "T+1 pre/post stratification -- deferred to future work",
-          "paper_value": null,
-          "kind": "computed",
-          "expr": "0",
+          "id": "s56_t1_did_treasury",
+          "tex_section": "5.6 T+1 DiD",
+          "claim_text": "US Treasury group DiD = -2.89 pp (Welch p=0.49)",
+          "paper_value": -2.89,
+          "kind": "json",
+          "json_path": "output/did_t1_summary.json",
+          "key_path": ["did_vs_ucits", "US_Treasury", "did"],
           "tolerance_type": "percentage_pp",
-          "severity": "DEFERRED",
-          "_note": "Requires non-proxy NAV to be meaningful."
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_t1_did_broadagg",
+          "tex_section": "5.6 T+1 DiD",
+          "claim_text": "US Broad-Agg DiD = +2.40 pp (Welch p=0.61)",
+          "paper_value": 2.4,
+          "kind": "json",
+          "json_path": "output/did_t1_summary.json",
+          "key_path": ["did_vs_ucits", "US_BroadAgg", "did"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_t1_did_credit",
+          "tex_section": "5.6 T+1 DiD",
+          "claim_text": "US Credit/HY/EM DiD = -2.12 pp (Welch p=0.60)",
+          "paper_value": -2.12,
+          "kind": "json",
+          "json_path": "output/did_t1_summary.json",
+          "key_path": ["did_vs_ucits", "US_Credit", "did"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_t1_did_canadian",
+          "tex_section": "5.6 T+1 DiD",
+          "claim_text": "Canadian DiD = -3.54 pp (Welch p=0.42)",
+          "paper_value": -3.54,
+          "kind": "json",
+          "json_path": "output/did_t1_summary.json",
+          "key_path": ["did_vs_ucits", "Canadian", "did"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_t1_ucits_delta",
+          "tex_section": "5.6 T+1 DiD",
+          "claim_text": "UCITS control delta = +6.74 pp",
+          "paper_value": 6.74,
+          "kind": "json",
+          "json_path": "output/did_t1_summary.json",
+          "key_path": ["groups", "European_UCITS", "delta_mean"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_t1_treasury_post",
+          "tex_section": "5.6 T+1 DiD",
+          "claim_text": "US Treasury post-window mean = 26.3%",
+          "paper_value": 26.3,
+          "kind": "json",
+          "json_path": "output/did_t1_summary.json",
+          "key_path": ["groups", "US_Treasury", "post_mean"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.5,
+          "severity": "HARD"
         }
       ]
     }

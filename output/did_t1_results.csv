@@ -1,0 +1,5 @@
+treatment_group,n_treat,n_ctrl,mean_pre_treat,mean_post_treat,mean_pre_ctrl,mean_post_ctrl,delta_treat,delta_ctrl,did,t_welch,p_welch
+US_Treasury,3,2,22.44,26.28,27.88,34.62,3.85,6.74,-2.89,-0.934,0.4904
+US_BroadAgg,4,2,21.16,30.29,27.88,34.62,9.14,6.74,2.4,0.569,0.6069
+US_Credit,5,2,23.08,27.69,27.88,34.62,4.62,6.74,-2.12,-0.614,0.603
+Canadian,3,2,30.77,33.96,27.88,34.62,3.19,6.74,-3.54,-1.021,0.4193

@@ -1,0 +1,86 @@
+{
+  "event_date": "2024-05-28",
+  "pre_window": [
+    "2023-05-28",
+    "2024-05-28"
+  ],
+  "post_window": [
+    "2024-05-29",
+    "2025-05-29"
+  ],
+  "n_funds_total": 18,
+  "groups": {
+    "Canadian": {
+      "n": 3,
+      "pre_mean": 30.77,
+      "post_mean": 33.96,
+      "delta_mean": 3.19,
+      "delta_se": 1.92
+    },
+    "Equity_Benchmark": {
+      "n": 1,
+      "pre_mean": 21.15,
+      "post_mean": 21.15,
+      "delta_mean": 0.0,
+      "delta_se": null
+    },
+    "European_UCITS": {
+      "n": 2,
+      "pre_mean": 27.88,
+      "post_mean": 34.62,
+      "delta_mean": 6.74,
+      "delta_se": 2.88
+    },
+    "US_BroadAgg": {
+      "n": 4,
+      "pre_mean": 21.15,
+      "post_mean": 30.29,
+      "delta_mean": 9.14,
+      "delta_se": 3.08
+    },
+    "US_Credit": {
+      "n": 5,
+      "pre_mean": 23.08,
+      "post_mean": 27.69,
+      "delta_mean": 4.62,
+      "delta_se": 1.88
+    },
+    "US_Treasury": {
+      "n": 3,
+      "pre_mean": 22.44,
+      "post_mean": 26.28,
+      "delta_mean": 3.85,
+      "delta_se": 1.11
+    }
+  },
+  "did_vs_ucits": {
+    "US_Treasury": {
+      "did": -2.89,
+      "t_welch": -0.934,
+      "p_welch": 0.4904,
+      "n_treat": 3,
+      "n_ctrl": 2
+    },
+    "US_BroadAgg": {
+      "did": 2.4,
+      "t_welch": 0.569,
+      "p_welch": 0.6069,
+      "n_treat": 4,
+      "n_ctrl": 2
+    },
+    "US_Credit": {
+      "did": -2.12,
+      "t_welch": -0.614,
+      "p_welch": 0.603,
+      "n_treat": 5,
+      "n_ctrl": 2
+    },
+    "Canadian": {
+      "did": -3.54,
+      "t_welch": -1.021,
+      "p_welch": 0.4193,
+      "n_treat": 3,
+      "n_ctrl": 2
+    }
+  }
+}
