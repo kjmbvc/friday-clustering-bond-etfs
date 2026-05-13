@@ -1,14 +1,14 @@
 # Research-integrity audit report
 
-_Generated: 2026-05-13T16:38:05_
+_Generated: 2026-05-13T20:36:17_
 
 ## Summary
 
 - 🔴 **RED**:      0  (paper claim contradicts code output)
 - 🟡 **YELLOW**:   0  (lookup failed / manifest incomplete)
-- 🟢 **GREEN**:   80  (paper claim matches code output)
+- 🟢 **GREEN**:   84  (paper claim matches code output)
 - ⚪ **GRAY**:     2  (illustrative / deferred per manifest)
-- **Total claims audited**: 82
+- **Total claims audited**: 86
 
 ✅ **Clean audit** — all claims either match code, are explicitly illustrative, or are deferred future work.
 
@@ -25,8 +25,12 @@ _Generated: 2026-05-13T16:38:05_
 | GREEN | `s51_sig_at_q05` | section_5_1_hcug | 17 | 17.0000 | 0.0000 | abs 1 | HARD | output/hcug_results.csv[sig_flag=1].count(sig_flag) |
 | GREEN | `s51_sig_at_q001` | section_5_1_hcug | 17 | 17.0000 | 0.0000 | abs 1 | HARD | output/aggregate_stats.json:sig_count_q01 |
 | GREEN | `s51_baseline` | section_5_1_hcug | 20.0000 | 20.0600 | 0.0600 | abs 1.0 | HARD | output/aggregate_stats.json:baseline_E_fri_pct |
-| GREEN | `s52_max_side_mean` | section_5_2_wsas | 27.0000 | 27.2300 | 0.2300 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_max_fri_mean_pct |
-| GREEN | `s52_min_side_mean` | section_5_2_wsas | 23.6000 | 23.7800 | 0.1800 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_min_fri_mean_pct |
+| GREEN | `s52_max_side_mean` | section_5_2_wsas | 27.2000 | 27.2300 | 0.0300 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_max_fri_mean_pct |
+| GREEN | `s52_max_side_min` | section_5_2_wsas | 25.0000 | 25.0000 | 0.0000 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_max_fri_min_pct |
+| GREEN | `s52_max_side_max` | section_5_2_wsas | 29.1000 | 29.1300 | 0.0300 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_max_fri_max_pct |
+| GREEN | `s52_min_side_mean` | section_5_2_wsas | 23.8000 | 23.7800 | 0.0200 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_min_fri_mean_pct |
+| GREEN | `s52_min_side_min` | section_5_2_wsas | 20.8000 | 20.8000 | 0.0000 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_min_fri_min_pct |
+| GREEN | `s52_min_side_max` | section_5_2_wsas | 25.0000 | 24.9800 | 0.0200 | abs 1.0 | HARD | output/aggregate_stats.json:wsas_p_min_fri_max_pct |
 | GREEN | `s52_psi_low` | section_5_2_wsas | 0.0050 | 0.0050 | 0.0000 | abs 0.03 | HARD | output/aggregate_stats.json:psi_min |
 | GREEN | `s52_psi_high` | section_5_2_wsas | 0.0800 | 0.0803 | 0.0003 | abs 0.03 | HARD | output/aggregate_stats.json:psi_max |
 | GREEN | `s52_psi_sig_count` | section_5_2_wsas | 4 | 4.0000 | 0.0000 | abs 1 | HARD | output/aggregate_stats.json:psi_sig_count |

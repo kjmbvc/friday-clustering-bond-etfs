@@ -152,8 +152,8 @@
         {
           "id": "s52_max_side_mean",
           "tex_section": "5.2 WSAS",
-          "claim_text": "max-side average 27.0%",
-          "paper_value": 27.0,
+          "claim_text": "max-side average 27.2%",
+          "paper_value": 27.2,
           "kind": "json",
           "json_path": "output/aggregate_stats.json",
           "key_path": [
@@ -164,14 +164,70 @@
           "severity": "HARD"
         },
         {
+          "id": "s52_max_side_min",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "max-side range lower bound 25.0%",
+          "paper_value": 25.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_p_max_fri_min_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_max_side_max",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "max-side range upper bound 29.1%",
+          "paper_value": 29.1,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_p_max_fri_max_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
           "id": "s52_min_side_mean",
           "tex_section": "5.2 WSAS",
-          "claim_text": "min-side average 23.6%",
-          "paper_value": 23.6,
+          "claim_text": "min-side average 23.8%",
+          "paper_value": 23.8,
           "kind": "json",
           "json_path": "output/aggregate_stats.json",
           "key_path": [
             "wsas_p_min_fri_mean_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_min_side_min",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "min-side range lower bound 20.8%",
+          "paper_value": 20.8,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_p_min_fri_min_pct"
+          ],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 1.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s52_min_side_max",
+          "tex_section": "5.2 WSAS",
+          "claim_text": "min-side range upper bound 25.0%",
+          "paper_value": 25.0,
+          "kind": "json",
+          "json_path": "output/aggregate_stats.json",
+          "key_path": [
+            "wsas_p_min_fri_max_pct"
           ],
           "tolerance_type": "percentage_pp",
           "tolerance_abs": 1.0,
