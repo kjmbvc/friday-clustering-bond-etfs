@@ -1276,6 +1276,90 @@
           "tolerance_type": "percentage_pp",
           "tolerance_abs": 1.5,
           "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_lrt_weekday_chi2",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "Fisher combined LR_weekday chi2 = 99.1",
+          "paper_value": 99.1,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["cross_fund_LRT", "weekday_chi2"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 3.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_lrt_t1_chi2",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "Fisher combined LR_t1_break chi2 = 26.2 (n.s.)",
+          "paper_value": 26.2,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["cross_fund_LRT", "t1_break_chi2"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 3.0,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_lrt_t1_p",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "T+1 break Fisher p = 0.83 (NOT rejected)",
+          "paper_value": 0.83,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["cross_fund_LRT", "t1_break_p_fisher"],
+          "tolerance_type": "p_value_qualitative",
+          "tolerance_abs": 0.05,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_panel_did_beta",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "Panel DiD beta_hat = -0.060",
+          "paper_value": -0.06,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["panel_did_wild_cluster", "beta_hat"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 0.03,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_wild_cluster_p",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "Wild-cluster bootstrap p = 0.11 (NOT significant)",
+          "paper_value": 0.11,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["panel_did_wild_cluster", "p_wild_two_sided"],
+          "tolerance_type": "p_value_qualitative",
+          "tolerance_abs": 0.05,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_pre_trend_beta",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "Pre-trend Wald beta = +0.004",
+          "paper_value": 0.004,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["pre_trend_wald", "beta"],
+          "tolerance_type": "percentage_pp",
+          "tolerance_abs": 0.005,
+          "severity": "HARD"
+        },
+        {
+          "id": "s56_v7_pre_trend_p",
+          "tex_section": "5.6 T+1 LRT (v7)",
+          "claim_text": "Pre-trend Wald p = 0.19 (parallel trends NOT rejected)",
+          "paper_value": 0.19,
+          "kind": "json",
+          "json_path": "output/ou_t1_lrt_summary.json",
+          "key_path": ["pre_trend_wald", "p"],
+          "tolerance_type": "p_value_qualitative",
+          "tolerance_abs": 0.05,
+          "severity": "HARD"
         }
       ]
     }

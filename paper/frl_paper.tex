@@ -567,6 +567,31 @@ Appendix~E.5.
 \end{threeparttable}
 \end{table}
 
+\paragraph{Structural-model check.}
+As an independent robustness check we re-fit each fund's daily
+premium series with an Ornstein--Uhlenbeck model with
+weekday-conditional drift and a T+1 structural break (12 parameters
+per fund: $\phi$, $\omega$, $\mu_{d,\tau}$ for $d \in \{\mathrm{Mon},\ldots,\mathrm{Fri}\}$,
+$\tau \in \{0,1\}$).  We perform two likelihood-ratio tests
+per fund: (i)~$H_0\!:$ constant drift (3 params) vs $H_1\!:$
+weekday$\times$T+1 drift (12 params), $\mathrm{df}=9$; and
+(ii)~$H_0\!:$ weekday drift (7 params) vs $H_1\!:$ weekday$\times$T+1
+drift (12 params), $\mathrm{df}=5$.  Cross-fund aggregation uses
+Fisher's combined-$p$ test.  The weekday effect is overwhelmingly
+significant ($\chi^2 = 99.1$, Fisher $p \approx 2.8\!\times\!10^{-8}$
+across 17 funds), consistent with the HCUG headline.  The T+1 break,
+by contrast, is \emph{not} detected ($\chi^2 = 26.2$, Fisher
+$p = 0.83$): the Friday-specific drift $\mu_{\mathrm{Fri},\tau}$ does
+not shift across the event date.  A panel DiD on the weekly
+Friday-indicator with fund and week fixed effects yields
+$\hat\beta_{\mathrm{Treated}\times\mathrm{Post}} = -0.060$
+(wild-cluster bootstrap $p = 0.11$, 1{,}999 replicates, fund-level
+Rademacher weights), and the within-pre-window parallel-trends Wald
+gives $\hat\beta_{\mathrm{time}\times\mathrm{treated}} = +0.004$
+($p = 0.19$), so the parallel-trends assumption is not rejected but
+the DiD null itself is also not rejected.  The full output is in
+\texttt{output/ou\_t1\_lrt\_summary.json}.
+
 \subsection{Robustness summary (sub-period stability)}
 Under the 5-day-MA NAV proxy, the median U.S.\ bond-ETF Friday share
 is approximately flat across four sub-periods: $23.9\%$ in

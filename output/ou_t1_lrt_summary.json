@@ -1,0 +1,47 @@
+{
+  "event_date": "2024-05-28",
+  "n_funds": 17,
+  "cross_fund_LRT": {
+    "weekday_chi2": 99.067,
+    "weekday_p_fisher": 0.0,
+    "t1_break_chi2": 26.237,
+    "t1_break_p_fisher": 0.826842
+  },
+  "panel_did_wild_cluster": {
+    "beta_hat": -0.0598,
+    "t_hc1": -1.474,
+    "se_hc1": 0.0406,
+    "p_wild_two_sided": 0.108,
+    "n_obs": 16158,
+    "n_clusters": 17,
+    "n_replicates": 1999
+  },
+  "pre_trend_wald": {
+    "beta": 0.0039,
+    "se": 0.003,
+    "t": 1.314,
+    "p": 0.1887,
+    "n": 887
+  },
+  "treated_tickers": [
+    "IEF",
+    "TLT",
+    "AGG",
+    "LQD",
+    "MUB",
+    "EMB",
+    "HYG",
+    "BND",
+    "VCIT",
+    "VTEB",
+    "GOVT",
+    "SPIB",
+    "XBB",
+    "ZAG",
+    "VAB"
+  ],
+  "control_tickers": [
+    "IUSU",
+    "IBGS"
+  ]
+}

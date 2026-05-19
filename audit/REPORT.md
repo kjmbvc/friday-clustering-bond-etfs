@@ -1,14 +1,14 @@
 # Research-integrity audit report
 
-_Generated: 2026-05-13T21:11:20_
+_Generated: 2026-05-19T13:36:27_
 
 ## Summary
 
 - 🔴 **RED**:      0  (paper claim contradicts code output)
 - 🟡 **YELLOW**:   0  (lookup failed / manifest incomplete)
-- 🟢 **GREEN**:   90  (paper claim matches code output)
+- 🟢 **GREEN**:   97  (paper claim matches code output)
 - ⚪ **GRAY**:     1  (illustrative / deferred per manifest)
-- **Total claims audited**: 91
+- **Total claims audited**: 98
 
 ✅ **Clean audit** — all claims either match code, are explicitly illustrative, or are deferred future work.
 
@@ -106,6 +106,13 @@ _Generated: 2026-05-13T21:11:20_
 | GREEN | `s56_t1_did_canadian` | deferred | -3.5400 | -3.5400 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:did_vs_ucits/Canadian/did |
 | GREEN | `s56_t1_ucits_delta` | deferred | 6.7400 | 6.7400 | 0.0000 | abs 1.5 | HARD | output/did_t1_summary.json:groups/European_UCITS/delta_mean |
 | GREEN | `s56_t1_treasury_post` | deferred | 26.3000 | 26.2800 | 0.0200 | abs 1.5 | HARD | output/did_t1_summary.json:groups/US_Treasury/post_mean |
+| GREEN | `s56_v7_lrt_weekday_chi2` | deferred | 99.1000 | 99.0670 | 0.0330 | abs 3.0 | HARD | output/ou_t1_lrt_summary.json:cross_fund_LRT/weekday_chi2 |
+| GREEN | `s56_v7_lrt_t1_chi2` | deferred | 26.2000 | 26.2370 | 0.0370 | abs 3.0 | HARD | output/ou_t1_lrt_summary.json:cross_fund_LRT/t1_break_chi2 |
+| GREEN | `s56_v7_lrt_t1_p` | deferred | 0.8300 | 0.8268 | 0.0032 | abs 0.05 | HARD | output/ou_t1_lrt_summary.json:cross_fund_LRT/t1_break_p_fish |
+| GREEN | `s56_v7_panel_did_beta` | deferred | -0.0600 | -0.0598 | 0.0002 | abs 0.03 | HARD | output/ou_t1_lrt_summary.json:panel_did_wild_cluster/beta_ha |
+| GREEN | `s56_v7_wild_cluster_p` | deferred | 0.1100 | 0.1080 | 0.0020 | abs 0.05 | HARD | output/ou_t1_lrt_summary.json:panel_did_wild_cluster/p_wild_ |
+| GREEN | `s56_v7_pre_trend_beta` | deferred | 0.0040 | 0.0039 | 0.0001 | abs 0.005 | HARD | output/ou_t1_lrt_summary.json:pre_trend_wald/beta |
+| GREEN | `s56_v7_pre_trend_p` | deferred | 0.1900 | 0.1887 | 0.0013 | abs 0.05 | HARD | output/ou_t1_lrt_summary.json:pre_trend_wald/p |
 
 ## ⚪ GRAY — illustrative / deferred (audit skipped)
 
