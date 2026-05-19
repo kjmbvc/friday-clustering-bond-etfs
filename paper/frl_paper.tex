@@ -349,6 +349,58 @@ settlement transition) is reported as descriptive only; a full
 difference-in-differences with Canadian synthetic controls is left to
 future work.
 
+\subsection{Classical baseline comparison}\label{sec:baseline}
+To confirm that Friday clustering cannot be explained by parameter
+tuning of a weekday-uniform model, we fit three classical baselines
+to each fund's premium series by OLS/MLE and simulate $B = 2{,}000$
+weekly paths from each: a pure Ornstein--Uhlenbeck AR(1) process
+(\textbf{OU}; 3 parameters: $\phi$, $\omega$, $\mu$), a
+\textbf{Random Walk} ($\omega$ only), and a \textbf{Brownian Bridge}
+anchored at the weekly open and close ($\sigma_B$ only). For each
+simulated path we record the weekday of the weekly maximum and
+compare the resulting weekday distribution to the empirical
+distribution via the G-statistic (df~$= 4$) and KL divergence.
+
+Table~\ref{tab:baseline} summarises the results across all 17 bond
+ETFs. All three classical models produce mean G-statistics far above
+the $\chi^2_4$ critical value of $9.5$ ($p < 0.05$): the OU mean is
+$21.4$, the random walk $25.8$, and the Brownian bridge $21.2$. In
+every case, 17 of 17 funds reject the classical null at $q < 0.05$.
+By contrast, the 12-parameter alternative OU model with
+weekday-conditional drift (\texttt{code/12\_ou\_t1\_lrt.py}) achieves
+a mean G of only $3.2$ with 0 of 17 rejections. This model-selection
+evidence is independent of the permutation-based HCUG test, as it is
+derived entirely from MLE simulation paths.
+
+\begin{table}[!h]
+\centering
+\caption{Classical baseline comparison: weekday-of-maximum distribution
+  (G-statistic and KL divergence) across 17 bond ETFs. B = 2{,}000
+  simulation paths per fund. Alternative: OU with weekday-conditional
+  drift (12 params); results from \texttt{output/ou\_t1\_lrt\_per\_fund.csv}.}
+\label{tab:baseline}
+\small
+\begin{threeparttable}
+\begin{tabular}{lcccc}
+\toprule
+Model & Params/fund & Mean $G$ & Mean KL & Rejections ($p < 0.05$) \\
+\midrule
+OU (classical, weekday-uniform)  & 3  & 21.4 & 0.012 & 17/17 \\
+Random Walk                      & 1  & 25.8 & 0.018 & 17/17 \\
+Brownian Bridge                  & 1  & 21.2 & 0.014 & 17/17 \\
+\midrule
+OU + weekday-conditional (ours)  & 12 &  3.2 & 0.001 &  0/17 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\small
+\item Source: \texttt{output/baseline\_comparison\_table2.csv}
+  (classical baselines) and \texttt{output/ou\_t1\_lrt\_per\_fund.csv}
+  (alternative model G). G critical value: $\chi^2_4 = 9.49$ ($p = 0.05$).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
 \subsection{Reproducibility}
 Software: Python~3.11 and R \texttt{MSGARCH 2.5} via \texttt{rpy2}.
 Random seeds (permutation 20260101; MSGARCH start 20260102; ridge

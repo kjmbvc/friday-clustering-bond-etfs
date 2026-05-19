@@ -46,6 +46,8 @@ if [[ "${SKIP_PIPELINE:-0}" != "1" ]]; then
   $PY code/10_audit_inputs.py 2>&1 | tail -10
   $PY code/11_did_t1.py 2>&1 | tail -8
   $PY code/12_ou_t1_lrt.py 2>&1 | tail -10
+  $PY code/13_baseline_simulation.py 2>&1 | tail -8
+  $PY code/14_mechanism_roadmap.py 2>&1 | tail -5
 fi
 
 echo
